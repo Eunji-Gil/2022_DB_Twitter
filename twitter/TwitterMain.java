@@ -108,7 +108,7 @@ public class TwitterMain {
 					for (int i = 0; i < str.length; i++) {
 						System.out.println(Arrays.toString(str[i]));
 					}
-				} else
+				} else 
 					break;
 
 			}

@@ -9,11 +9,11 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class JdbcConnection {
-	final String ERROR = "Something wrong.";
-	private String server;
-	private String database;
-	private String userName;
-	private String password;
+	final static String ERROR = "Something wrong.";
+	private static String server;
+	private static String database;
+	private static String userName;
+	private static String password;
 
 	public JdbcConnection() throws Exception {
 
@@ -33,7 +33,7 @@ public class JdbcConnection {
 		}
 	}
 
-	public Connection getConnection() {
+	public static Connection getConnection() {
 		Connection connection = null;
 		// Connect
 		try {
@@ -48,7 +48,7 @@ public class JdbcConnection {
 		return connection;
 	}
 
-	public boolean isExistingID(String ID) {
+	public static boolean isExistingID(String ID) {
 		String sql = " SELECT * FROM userinfo WHERE userId = '" + ID + "'";
 
 		PreparedStatement preparedStatement = null;
@@ -78,7 +78,7 @@ public class JdbcConnection {
 		return false;
 	}
 
-	public int login(String ID, String password) {
+	public static int login(String ID, String password) {
 		String sql = " SELECT * FROM userinfo WHERE userId = '" + ID + "'";
 
 		PreparedStatement preparedStatement = null;
@@ -110,7 +110,7 @@ public class JdbcConnection {
 		return -1;
 	}
 
-	public String[] profile(int ID) {
+	public static String[] profile(int ID) {
 		String sql = "select user.userName,user.userLocatoin,user.userBio,user.userIdx,user.createAt,count(CASE when follow.userIdx = user.userIdx THEN 1 END) as following,count( CASE when follow.followedUser = user.userIdx THEN 1 END) as follower\r\n"
 				+ "from follow,user\r\n" + "where user.userIdx = '" + ID + "';";
 		PreparedStatement preparedStatement = null;
@@ -132,7 +132,7 @@ public class JdbcConnection {
 		return res;
 	}
 
-	public void editProfile(int ID, String photoAdrress, String headerPhotoAdrress, String userBio, String userLocatoin,
+	public static void editProfile(int ID, String photoAdrress, String headerPhotoAdrress, String userBio, String userLocatoin,
 			String userName) {
 		String sqlPhoto = "insert into photo(photoAdress) value('" + photoAdrress + "')";
 		String AdrressIdx1 = "SELECT LAST_INSERT_ID()";
@@ -161,7 +161,6 @@ public class JdbcConnection {
 					+ userName + "\"\r\n" + "where userIdx = '" + ID + "'";
 			preparedStatement = connection.prepareStatement(sql);
 			preparedStatement.executeUpdate();
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -179,7 +178,7 @@ public class JdbcConnection {
 
 	}
 
-	public void likes() {
+	public static void likes() {
 		String sql = "";
 		PreparedStatement preparedStatement = null;
 		Connection connection = getConnection();
@@ -194,7 +193,7 @@ public class JdbcConnection {
 		}
 	}
 
-	public void addFollow(int userId, int otherId) {
+	public static void addFollow(int userId, int otherId) {
 		String sql = "insert into follow(userIdx, followedUser) values('" + userId + "','" + otherId + "')";
 		PreparedStatement preparedStatement = null;
 		Connection connection = getConnection();
@@ -208,7 +207,7 @@ public class JdbcConnection {
 		}
 	}
 
-	public void rmFollow(int userId, int otherId) {
+	public static void rmFollow(int userId, int otherId) {
 		String sql = "delete from follow where userIdx = " + userId + "and followedUser = " + otherId + ")";
 		PreparedStatement preparedStatement = null;
 		Connection connection = getConnection();
@@ -220,7 +219,7 @@ public class JdbcConnection {
 		}
 	}
 
-	public String[][] viewFollowing(int userId) {
+	public static String[][] viewFollowing(int userId) {
 		String sql = "select followed.userName,followed.userBio, followed.userID, f.followedUser, photo.photoAdress\r\n"
 				+ "from (user as followed join follow f on followed.userIdx = f.followedUser)left outer join photo on followed.photoIdx = photo.photoIdx\r\n"
 				+ "where f.userIdx = " + userId;
@@ -253,7 +252,7 @@ public class JdbcConnection {
 		return str;
 	}
 
-	public String[][] viewFollower(int userId) {
+	public static String[][] viewFollower(int userId) {
 		String sql = "select followed.userName,followed.userBio, followed.userID, f.followedUser, photo.photoAdress\r\n"
 				+ "from (user as followed join follow f on followed.userIdx = f.userIdx)left outer join photo on followed.photoIdx = photo.photoIdx\r\n"
 				+ "where f.followedUser =" + userId;
