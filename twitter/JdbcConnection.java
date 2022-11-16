@@ -1004,27 +1004,28 @@ public class JdbcConnection {
         return result;
     }
 
-    public void pofileTweets(int userId) {
-
-    }
-
-    public void pofileTweetsreplies() {
-
-    }
-
-    public static void likes() {
-        String sql = "";
+    public static boolean existfollow(int userIdx, int otherIdx) {
+        String sql = "select EXISTS(\r\n"
+                + "    select *\r\n"
+                + "    from follow\r\n"
+                + "    where userIdx = \'" + userIdx + "\' and followedUser = \'" + otherIdx + "\'\r\n"
+                + "           ) as Success";
         PreparedStatement preparedStatement = null;
         Connection connection = getConnection();
         ResultSet selectResult = null;
         try {
-            // 쿼리 실행
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.executeUpdate();
-
+            selectResult = preparedStatement.executeQuery();
+            if(selectResult.next()) {
+                if(selectResult.getInt(1)==1) {
+                    return true;
+                }
+                return false;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     public static void addFollow(int userId, int otherId) {
@@ -1042,7 +1043,7 @@ public class JdbcConnection {
     }
 
     public static void rmFollow(int userId, int otherId) {
-        String sql = "delete from follow where userIdx = " + userId + "and followedUser = " + otherId + ")";
+        String sql = "delete from follow where userIdx = '" + userId + "' and followedUser = " + otherId;
         PreparedStatement preparedStatement = null;
         Connection connection = getConnection();
         try {
@@ -1090,7 +1091,7 @@ public class JdbcConnection {
     }
 
     public static String[][] viewFollower(int userId) {
-        String sql = "select followed.userName,followed.userBio, followed.userID, f.followedUser, photo.photoAdress\r\n"
+        String sql = "select followed.userName,followed.userBio, followed.userID, f.userIdx, photo.photoAdress\r\n"
                 + "from (user as followed join follow f on followed.userIdx = f.userIdx)left outer join photo on followed.photoIdx = photo.photoIdx\r\n"
                 + "where f.followedUser =" + userId;
         String sql2 = "select count(followed.userIdx) as followCount\r\n"
