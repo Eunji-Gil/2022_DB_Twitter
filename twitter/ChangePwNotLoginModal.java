@@ -1,4 +1,4 @@
-package twitter;
+package gui;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -73,9 +73,9 @@ public class ChangePwNotLoginModal extends JDialog {
 				try {
 					JdbcConnection JdbcConnection = new JdbcConnection();
 					
-					// userId Á¦´ë·Î ÀÔ·ÂÇÑ °æ¿ì
+					// userId ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 					if (JdbcConnection.existUserID(userId)) {
-						// email Àß¸ø ÀÔ·ÂÇÑ °æ¿ì
+						// email ï¿½ß¸ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 						if (!JdbcConnection.userConfirm(userId,userEmail)) {
 							JOptionPane.showMessageDialog(null, "Wrong Email. Try again.", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
@@ -84,7 +84,7 @@ public class ChangePwNotLoginModal extends JDialog {
 							JOptionPane.showMessageDialog(null, "Password's changed!");
 						}
 					}
-					// userId Àß¸ø ÀÔ·ÂÇÑ °æ¿ì
+					// userId ï¿½ß¸ï¿½ ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 					else if (!JdbcConnection.existUserID(userId)) {
 						JOptionPane.showMessageDialog(null, "Wrong Id. Try again.", "Warning", JOptionPane.ERROR_MESSAGE);
 					}

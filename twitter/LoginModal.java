@@ -1,4 +1,4 @@
-package twitter;
+package gui;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -34,7 +34,7 @@ public class LoginModal extends JDialog {
 		// Login Button
 		JButton btnLogin = new JButton("Login");
 		
-		// ·Î±×ÀÎ ½ÇÇà
+		// ï¿½Î±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		btnLogin.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent arg0) {

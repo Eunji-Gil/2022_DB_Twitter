@@ -1,4 +1,4 @@
-package twitter;
+package gui;
 
 import java.awt.*;
 import javax.swing.*;
@@ -77,7 +77,7 @@ public class twitterGUI {
 		btnLogin.setBounds(718, 180, 185, 52);
 		panel.add(btnLogin);
 		
-		// Update Password (ºñ¹Ð¹øÈ£¸¦ ÀØ¾î¹ö·ÈÀ» ¶§, ºñ¹Ð¹øÈ£ º¯°æ)
+		// Update Password (ï¿½ï¿½Ð¹ï¿½È£ï¿½ï¿½ ï¿½Ø¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½Ð¹ï¿½È£ ï¿½ï¿½ï¿½ï¿½)
 		JButton btnUpdatePassword = new JButton("Forget Password");
 		btnUpdatePassword.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

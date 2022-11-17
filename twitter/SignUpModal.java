@@ -1,4 +1,4 @@
-package twitter;
+package gui;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -53,7 +53,7 @@ public class SignUpModal extends JDialog {
 		// Sign up button
 		JButton btnSignUpEmail = new JButton("Sign Up");
 		
-		// Email È¸¿ø°¡ÀÔ ½ÇÇà
+		// Email È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		btnSignUpEmail.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent arg0) {
@@ -65,19 +65,19 @@ public class SignUpModal extends JDialog {
 				try {
 					JdbcConnection JdbcConnection = new JdbcConnection();
 					
-					// Id Áßº¹µÇÁö ¾Ê´Â °æ¿ì
+					// Id ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½
 					if (!JdbcConnection.existUserID(userId)) {
-						// Email Áßº¹µÇ´Â °æ¿ì
+						// Email ï¿½ßºï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½
 						if (JdbcConnection.existEmail(userEmail)) {
 							JOptionPane.showMessageDialog(null, "Email already exists.", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
-						// Email Áßº¹µÇÁö ¾Ê´Â °æ¿ì
+						// Email ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½
 						else {
 							JdbcConnection.signUp(userId, userEmail, userPassword, userName);
 							JOptionPane.showMessageDialog(null, "Welcome to Twitter!");
 						}
 					}
-					// Id Áßº¹µÇ´Â °æ¿ì
+					// Id ï¿½ßºï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½
 					else if (JdbcConnection.existUserID(userId)) {
 						JOptionPane.showMessageDialog(null, "ID already exists.", "Warning", JOptionPane.ERROR_MESSAGE);
 					}
@@ -139,7 +139,7 @@ public class SignUpModal extends JDialog {
 		// Sign up button
 		JButton btnSignUpPhone = new JButton("Sign Up");
 		
-		// Phone number È¸¿ø°¡ÀÔ ½ÇÇà
+		// Phone number È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		btnSignUpPhone.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent arg0) {
@@ -151,20 +151,20 @@ public class SignUpModal extends JDialog {
 				try {
 					JdbcConnection JdbcConnection = new JdbcConnection();
 					
-					// Id Áßº¹µÇÁö ¾Ê´Â °æ¿ì
+					// Id ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½
 					if (!JdbcConnection.existUserID(userId)) {
-						// phone number Áßº¹µÇÁö ¾Ê´Â °æ¿ì
+						// phone number ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½
 						if (!JdbcConnection.existPhoneNumber(userPhoneNumber)) {
 								JdbcConnection.singUpPhoneNumber(userId, userPhoneNumber, userPassword, userName);
 								panelPhoneSignUp.setVisible(false);
 								JOptionPane.showMessageDialog(null, "Welcome to Twitter!");					
 							}
-						// phone number Áßº¹µÇ´Â °æ¿ì
+						// phone number ï¿½ßºï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½
 						else {
 							JOptionPane.showMessageDialog(null, "Phone number already exists.", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
 					}
-					// Id Áßº¹µÇ´Â °æ¿ì
+					// Id ï¿½ßºï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½
 					else if (JdbcConnection.existUserID(userId)) {
 						JOptionPane.showMessageDialog(null, "ID already exists.", "Warning", JOptionPane.ERROR_MESSAGE);
 					}
