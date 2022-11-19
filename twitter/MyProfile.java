@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
-import temp.JdbcConnection;
 
 import javax.swing.JTextField;
 import java.awt.Font;
@@ -49,6 +48,8 @@ public class MyProfile extends JFrame implements ActionListener {
 	JLabel profileLable1_1;
 	JPanel postPhoto1;
 	JPanel postPhoto2;
+	JButton viewPost2;
+	JButton viewPost1;
 	private JButton homeButton;
 
 	public static void main(String[] args) {
@@ -228,12 +229,12 @@ public class MyProfile extends JFrame implements ActionListener {
 		post2.setBounds(280, 622, 445, 100);
 		frame.getContentPane().add(post2);
 
-		JButton viewPost1 = new JButton("viewPost");
+		viewPost1 = new JButton("viewPost");
 		viewPost1.setBackground(new Color(255, 255, 255));
 		viewPost1.setBounds(725, 524, 100, 100);
 		frame.getContentPane().add(viewPost1);
 
-		JButton viewPost2 = new JButton("viewPost");
+		viewPost2 = new JButton("viewPost");
 		viewPost2.setBackground(new Color(255, 255, 255));
 		viewPost2.setBounds(725, 624, 100, 100);
 		frame.getContentPane().add(viewPost2);
@@ -354,7 +355,14 @@ public class MyProfile extends JFrame implements ActionListener {
 
 		}
 		if (bb.equals(homeButton)) {
-			dispose();
+			//홈버튼으로 버튼 누르면 홈으로 연결되는 버튼입니다.
+			}
+		if(bb.equals(viewPost1)) {
+			//
+			//postinfo[count][2]가 post Idx입니다
+		}
+		if(bb.equals(viewPost2)) {
+			//postinfo[count+1][2]가 postIdx입니다
 		}
 	}
 

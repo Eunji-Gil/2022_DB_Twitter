@@ -28,6 +28,8 @@ public class OtherProfile extends JFrame implements ActionListener {
 	JButton following;
 	JButton follower;
 	JButton Tweets;
+	JButton viewPost1;
+	JButton viewPost2;
 	private int PostCount;
 	private int PostCeilCount;
 	private String[][] postinfo;
@@ -43,7 +45,7 @@ public class OtherProfile extends JFrame implements ActionListener {
 	private JLabel profileLable1_1;
 	private JButton prev;
 	private JButton next;
-	private int current_page = 0;
+	private int current_page = 1;
 	static String userID;
 	static String username;
 	static int followingCount;
@@ -225,12 +227,12 @@ public class OtherProfile extends JFrame implements ActionListener {
 		post2.setBounds(280, 622, 445, 100);
 		frame.getContentPane().add(post2);
 
-		JButton viewPost1 = new JButton("viewPost");
+		viewPost1 = new JButton("viewPost");
 		viewPost1.setBackground(new Color(255, 255, 255));
 		viewPost1.setBounds(725, 524, 100, 100);
 		frame.getContentPane().add(viewPost1);
 
-		JButton viewPost2 = new JButton("viewPost");
+		viewPost2 = new JButton("viewPost");
 		viewPost2.setBackground(new Color(255, 255, 255));
 		viewPost2.setBounds(725, 624, 100, 100);
 		frame.getContentPane().add(viewPost2);
@@ -353,6 +355,14 @@ public class OtherProfile extends JFrame implements ActionListener {
 				followButton = "Unfollow";
 				followStatus.setText(followButton);
 			}
+		}
+		if(bb.equals(viewPost1)) {
+			dispose();
+			//postinfo[count][2]가 post Idx입니다
+		}
+		if(bb.equals(viewPost2)) {
+			dispose();
+			//postinfo[count+1][2]가 postIdx입니다
 		}
 	}
 
