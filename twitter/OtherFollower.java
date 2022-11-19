@@ -122,9 +122,7 @@ public class OtherFollower extends JFrame implements ActionListener {
 		frame.setBounds(0, 0, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-		frame.setTitle("Follower");
-		ImageIcon frameImg = new ImageIcon("src/image/Twitter.png");
-		frame.setIconImage(frameImg.getImage());
+
 		profileButton = new JButton("←");
 		profileButton.setBackground(new Color(255, 255, 255));
 		profileButton.setFont(new Font("굴림", Font.BOLD, 20));
