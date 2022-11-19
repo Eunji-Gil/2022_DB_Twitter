@@ -84,7 +84,10 @@ public class MyProfile extends JFrame implements ActionListener {
 		}
 		String[] profileInfo = JdbcConnection.profile(userIdx);
 		String[] joinedSplit = profileInfo[5].split("-");
+		System.out.println(username);
 		username = profileInfo[1];
+		System.out.println(username);
+
 		userID = profileInfo[4];
 		followingCount = Integer.parseInt(profileInfo[6]);
 		followerCount = Integer.parseInt(profileInfo[7]);
@@ -124,7 +127,9 @@ public class MyProfile extends JFrame implements ActionListener {
 		frame.setBounds(0, 0, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
+		frame.setTitle("Profile");
+		ImageIcon frameImg = new ImageIcon("src/image/Twitter.png");
+		frame.setIconImage(frameImg.getImage());
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(new Color(209, 217, 221));
 		panel_1.setBounds(200, 139, 200, 200);
