@@ -122,7 +122,9 @@ public class Follower extends JFrame implements ActionListener {
 		frame.setBounds(0, 0, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
+		frame.setTitle("Follower");
+		ImageIcon frameImg = new ImageIcon("src/image/Twitter.png");
+		frame.setIconImage(frameImg.getImage());
 		profileButton = new JButton("←");
 		profileButton.setBackground(new Color(255, 255, 255));
 		profileButton.setFont(new Font("굴림", Font.BOLD, 20));
@@ -207,7 +209,7 @@ public class Follower extends JFrame implements ActionListener {
 		frame.getContentPane().add(lblNewLabel);
 
 		panel = new JPanel();
-		panel.setBackground(new Color(0, 128, 255));
+		panel.setBackground(new Color(209, 217, 221));
 		panel.setBounds(5, 135, 100, 100);
 		frame.getContentPane().add(panel);
 
@@ -216,7 +218,7 @@ public class Follower extends JFrame implements ActionListener {
 		panel.add(profileLable1);
 
 		panel_1 = new JPanel();
-		panel_1.setBackground(new Color(0, 128, 255));
+		panel_1.setBackground(new Color(209, 217, 221));
 		panel_1.setBounds(5, 245, 100, 100);
 		frame.getContentPane().add(panel_1);
 
@@ -224,7 +226,7 @@ public class Follower extends JFrame implements ActionListener {
 		panel_1.add(profileLable2);
 
 		panel_2 = new JPanel();
-		panel_2.setBackground(new Color(0, 128, 255));
+		panel_2.setBackground(new Color(209, 217, 221));
 		panel_2.setBounds(5, 355, 100, 100);
 		frame.getContentPane().add(panel_2);
 
@@ -232,7 +234,7 @@ public class Follower extends JFrame implements ActionListener {
 		panel_2.add(profileLable3);
 
 		panel_3 = new JPanel();
-		panel_3.setBackground(new Color(0, 128, 255));
+		panel_3.setBackground(new Color(209, 217, 221));
 		panel_3.setBounds(5, 465, 100, 100);
 		frame.getContentPane().add(panel_3);
 
@@ -240,7 +242,7 @@ public class Follower extends JFrame implements ActionListener {
 		panel_3.add(profileLable4);
 
 		panel_4 = new JPanel();
-		panel_4.setBackground(new Color(0, 128, 255));
+		panel_4.setBackground(new Color(209, 217, 221));
 		panel_4.setBounds(5, 575, 100, 100);
 		frame.getContentPane().add(panel_4);
 
