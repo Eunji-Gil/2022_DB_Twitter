@@ -888,22 +888,20 @@ public class JdbcConnection {
         try {
             preparedStatement = connection.prepareStatement(sql);
             selectResult = preparedStatement.executeQuery();
-            System.out.println(selectResult.next());
             if (selectResult.next()) {
                 for (int i = 1; i <= 7; i++) {
                     res[i] = selectResult.getString(i);
                 }
-                
                 preparedStatement = connection.prepareStatement(profilephotoSql);
                 selectResult = preparedStatement.executeQuery();
-                if (selectResult.next()) 
+                if (selectResult.next()) {
                     res[8] = selectResult.getString(1);
                     preparedStatement = connection.prepareStatement(headphotoSql);
                     selectResult = preparedStatement.executeQuery();
                     selectResult.next();
                     res[9] = selectResult.getString(1);
                     return res;
-                
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
