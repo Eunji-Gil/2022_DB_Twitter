@@ -7,11 +7,7 @@ import java.util.Properties;
 import java.util.Scanner;
 
 public class JdbcConnection {
-<<<<<<< HEAD
-	final static String ERROR = "Something wrong.";
-=======
 	static final String ERROR = "Error Occurred";
->>>>>>> main
 	private static String server;
 	private static String database;
 	private static String userName;
@@ -35,10 +31,7 @@ public class JdbcConnection {
 		}
 	}
 
-<<<<<<< HEAD
-=======
 	// DB object
->>>>>>> main
 	public static Connection getConnection() {
 		Connection connection = null;
 		// Connect
@@ -53,8 +46,6 @@ public class JdbcConnection {
 		return connection;
 	}
 
-<<<<<<< HEAD
-=======
 	///////////////////////////////////// Login Start
 	///////////////////////////////////// ///////////////////////////////////////
 	// userID
@@ -854,7 +845,6 @@ public class JdbcConnection {
 	///////////////////////////////////// ///////////////////////////////////////
 	///////////////////////////////////// ProFile Start
 	///////////////////////////////////// ///////////////////////////////////////
->>>>>>> main
 	public static boolean isExistingID(String ID) {
 		String sql = " SELECT * FROM userinfo WHERE userId = '" + ID + "'";
 
@@ -885,45 +875,8 @@ public class JdbcConnection {
 		return false;
 	}
 
-<<<<<<< HEAD
-	public static int login(String ID, String password) {
-		String sql = " SELECT * FROM userinfo WHERE userId = '" + ID + "'";
-
-		PreparedStatement preparedStatement = null;
-		Connection connection = getConnection();
-		ResultSet selectResult = null;
-
-		try {
-			preparedStatement = connection.prepareStatement(sql);
-			selectResult = preparedStatement.executeQuery();
-			if (selectResult.next())
-				if (selectResult.getString("userPassword").equalsIgnoreCase(password)) {
-					return selectResult.getInt("userInfoIdx");
-				}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		// DB close
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-			if (preparedStatement != null) {
-				preparedStatement.close();
-			}
-		} catch (SQLException e) {
-		}
-		return -1;
-	}
-
-	public static String[] profile(int ID) {
-		String sql = "select user.userName,user.userLocatoin,user.userBio,user.userIdx,user.createAt,count(CASE when follow.userIdx = user.userIdx THEN 1 END) as following,count( CASE when follow.followedUser = user.userIdx THEN 1 END) as follower\r\n"
-=======
 	public static String[] profile(int ID) {
 		String sql = "select user.userName,user.userLocatoin,user.userBio,user.userId,user.createAt,count(CASE when follow.userIdx = user.userIdx THEN 1 END) as following,count( CASE when follow.followedUser = user.userIdx THEN 1 END) as follower\r\n"
->>>>>>> main
 				+ "from follow,user\r\n" + "where user.userIdx = '" + ID + "';";
 		String profilephotoSql = "select photoAdress\r\n"
 				+ "from photo join user u on photo.photoIdx = u.photoIdx where userIdx='" + ID + "';";
@@ -958,13 +911,8 @@ public class JdbcConnection {
 		return res;
 	}
 
-<<<<<<< HEAD
-	public static void editProfile(int ID, String photoAdrress, String headerPhotoAdrress, String userBio, String userLocatoin,
-			String userName) {
-=======
 	public static void editProfile(int ID, String photoAdrress, String headerPhotoAdrress, String userBio,
 			String userLocatoin, String userName) {
->>>>>>> main
 		String sqlPhoto = "insert into photo(photoAdress) value('" + photoAdrress + "')";
 		String AdrressIdx1 = "SELECT LAST_INSERT_ID()";
 		String sqlheadPhoto = "insert into photo(photoAdress) value ('" + headerPhotoAdrress + "')";
@@ -979,21 +927,6 @@ public class JdbcConnection {
 			preparedStatement.executeUpdate();
 			preparedStatement = connection.prepareStatement(AdrressIdx1);
 			selectResult = preparedStatement.executeQuery();
-<<<<<<< HEAD
-			selectResult.next();
-			ads1 = selectResult.getString(1);
-			preparedStatement = connection.prepareStatement(sqlheadPhoto);
-			preparedStatement.executeUpdate();
-			preparedStatement = connection.prepareStatement(AdrressIdx2);
-			selectResult = preparedStatement.executeQuery();
-			selectResult.next();
-			ads2 = selectResult.getString(1);
-			String sql = "update user \r\n" + "set userBio = \"" + userBio + "\",photoIdx = \"" + ads1
-					+ "\",headerPhotoIdx = \"" + ads2 + "\",userLocatoin = \"" + userLocatoin + "\",userName = \""
-					+ userName + "\"\r\n" + "where userIdx = '" + ID + "'";
-			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.executeUpdate();
-=======
 			if (selectResult.next()) {
 				ads1 = selectResult.getString(1);
 				preparedStatement = connection.prepareStatement(sqlheadPhoto);
@@ -1009,7 +942,6 @@ public class JdbcConnection {
 				preparedStatement = connection.prepareStatement(sql);
 				preparedStatement.executeUpdate();
 			}
->>>>>>> main
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -1107,15 +1039,10 @@ public class JdbcConnection {
 		return result;
 	}
 
-<<<<<<< HEAD
-	public static void likes() {
-		String sql = "";
-=======
 	public static boolean existfollow(int userIdx, int otherIdx) {
 		System.out.println(userIdx+" "+otherIdx);
 		String sql = "select EXISTS(\r\n" + "    select *\r\n" + "    from follow\r\n" + "    where userIdx = \'"
 				+ userIdx + "\' and followedUser = \'" + otherIdx + "\'\r\n" + "           ) as Success";
->>>>>>> main
 		PreparedStatement preparedStatement = null;
 		Connection connection = getConnection();
 		ResultSet selectResult = null;
@@ -1149,11 +1076,7 @@ public class JdbcConnection {
 	}
 
 	public static void rmFollow(int userId, int otherId) {
-<<<<<<< HEAD
-		String sql = "delete from follow where userIdx = " + userId + "and followedUser = " + otherId + ")";
-=======
 		String sql = "delete from follow where userIdx = '" + userId + "' and followedUser = " + otherId;
->>>>>>> main
 		PreparedStatement preparedStatement = null;
 		Connection connection = getConnection();
 		try {
@@ -1201,11 +1124,7 @@ public class JdbcConnection {
 	}
 
 	public static String[][] viewFollower(int userId) {
-<<<<<<< HEAD
-		String sql = "select followed.userName,followed.userBio, followed.userID, f.followedUser, photo.photoAdress\r\n"
-=======
 		String sql = "select followed.userName,followed.userBio, followed.userID, f.userIdx, photo.photoAdress\r\n"
->>>>>>> main
 				+ "from (user as followed join follow f on followed.userIdx = f.userIdx)left outer join photo on followed.photoIdx = photo.photoIdx\r\n"
 				+ "where f.followedUser =" + userId;
 		String sql2 = "select count(followed.userIdx) as followCount\r\n"

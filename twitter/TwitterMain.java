@@ -168,53 +168,11 @@ public class TwitterMain {
 
                 flag = false;
 
-<<<<<<< HEAD
-	public static void twitter(int userId) {
-		Scanner scanner = new Scanner(System.in);
-		int menu = -1;
-		String[] pofileInfo = new String[8];
-		try {
-			JdbcConnection jdbcConnection = new JdbcConnection();
-			while (menu != 0) {
-				System.out.println("1. Profile 2. edit profile 3. following 4. follower");
-				menu = scanner.nextInt();
-				if (menu == 1) {
-					pofileInfo = jdbcConnection.profile(userId);
-					System.out.println("User Name: " + pofileInfo[1]);
-					System.out.println("User Bio: " + pofileInfo[2]);
-					System.out.println("User Location: " + pofileInfo[3]);
-					System.out.println("USer idx: " + pofileInfo[4]);
-					System.out.println("User CreatAt: " + pofileInfo[5]);
-					System.out.println("User following: " + pofileInfo[6]);
-					System.out.println("USer follower: " + pofileInfo[7]);
-				} else if (menu == 2) {
-					String photoIdx, headerPhotoIdx, userBio, userLocatoin, userName;
-					System.out.printf("insert photoAdress, headerPhotoAdress, userBio, userLocatoin, userName");
-					photoIdx = scanner.next();
-					headerPhotoIdx = scanner.next();
-					userBio = scanner.next();
-					userLocatoin = scanner.next();
-					userName = scanner.next();
-					jdbcConnection.editProfile(userId, photoIdx, headerPhotoIdx, userBio, userLocatoin, userName);
-				} else if (menu == 3) {
-					String[][] str = jdbcConnection.viewFollowing(userId);
-					for (int i = 0; i < str.length; i++) {
-						System.out.println(Arrays.toString(str[i]));
-					}
-				} else if (menu == 4) {
-					String[][] str = jdbcConnection.viewFollower(userId);
-					for (int i = 0; i < str.length; i++) {
-						System.out.println(Arrays.toString(str[i]));
-					}
-				} else 
-					break;
-=======
                 while(!flag){
                     System.out.println("| Enter your email | ");
                     email = scanner.nextLine();
                     flag = !JdbcConnection.existEmail(email);
                 }
->>>>>>> main
 
                 flag = false;
 
