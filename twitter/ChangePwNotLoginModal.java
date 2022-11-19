@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+// 로그인하지 않은 상태에서 비밀번호 바꾸는 모달 (Forget Password 버튼 누르면 실행)
 public class ChangePwNotLoginModal extends JDialog {
 	
 	public ChangePwNotLoginModal(Window parent) {
@@ -15,19 +16,6 @@ public class ChangePwNotLoginModal extends JDialog {
 		setLocationRelativeTo(null);
 		setResizable(false);
 		getContentPane().setBackground(Color.white);
-	
-	// Success Panel
-//		JPanel panelSuccessChange = new JPanel();
-//		panelSuccessChange.setBounds(0, 0, 495, 395);
-//		getContentPane().add(panelSuccessChange);
-//		panelSuccessChange.setLayout(null);
-//		
-//		// Label
-//		JLabel labelSuccess = new JLabel("Change password successfully!");
-//		labelSuccess.setFont(new Font("Arial", Font.BOLD, 18));
-//		labelSuccess.setBounds(100,150,400,50);
-//		
-//		panelSuccessChange.add(labelSuccess);
 		
 //		Logo
         JLabel imgLabel = new JLabel();

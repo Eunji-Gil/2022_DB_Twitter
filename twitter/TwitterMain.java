@@ -34,7 +34,7 @@ public class TwitterMain {
                 changePasswordNotLogin();
                 option = -1;
             } else if(option == 0) {
-                System.out.println("· · · · · Loading · · · · ·");
+                System.out.println("쨌 쨌 쨌 쨌 쨌 Loading 쨌 쨌 쨌 쨌 쨌");
                 break;
             } else {
                 System.out.println(WrongInput);
@@ -154,7 +154,7 @@ public class TwitterMain {
         selection = scanner.nextInt();
         scanner.nextLine();
 
-        // ?��메일�? ?��?���??��
+        // ?占쏙옙硫붿씪占�? ?占쏙옙?占쏙옙占�??占쏙옙
         if (selection == 1) {
             try {
                 JdbcConnection JdbcConnection = new JdbcConnection();
@@ -194,7 +194,7 @@ public class TwitterMain {
                 e.printStackTrace();
                 System.out.println(WrongInput);
             }
-        } // ?��???�� 번호�? ?��?���??��
+        } // ?占쏙옙???占쏙옙 踰덊샇占�? ?占쏙옙?占쏙옙占�??占쏙옙
         else {
             try {
                 JdbcConnection JdbcConnection = new JdbcConnection();
@@ -308,29 +308,6 @@ public class TwitterMain {
         }
     }
 
-    public static void changePasswordLogin(int userIdx){
-        Scanner scanner = new Scanner(System.in);
-        String userPassword = null;
-
-        System.out.println("----------- Setting a new password -----------");
-
-        try{
-            JdbcConnection JdbcConnection = new JdbcConnection();
-            boolean flag = false;
-
-            System.out.println("| Enter your new password |");
-            userPassword = scanner.nextLine();
-            flag = JdbcConnection.changeUserPassword(userIdx, userPassword);
-
-            if(flag) {
-                System.out.println("Password's changed!");
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-            System.out.println(WrongInput);
-        }
-    }
-
 //    public static void twitter(int userIdx){
 //        Scanner scanner = new Scanner(System.in);
 //        int option = -1;
@@ -340,13 +317,13 @@ public class TwitterMain {
 //            option = scanner.nextInt();
 //
 //            if(option == 1){
-//                //?��기서 ?��로우?�� ?��?��?�� ?��?���? 받기
-//                //(로그?�� ?�� ?��?��?�� userID)
-//                //insert to JDBC�? ?��?��?�� ?��겨서 리스?��?�� 추�?
-//                //?��로잉 리스?�� JDBCconnect�? ?��기기 (리스?�� 뽑기)
+//                //?占쏙옙湲곗꽌 ?占쏙옙濡쒖슦?占쏙옙 ?占쏙옙?占쏙옙?占쏙옙 ?占쏙옙?占쏙옙占�? 諛쏄린
+//                //(濡쒓렇?占쏙옙 ?占쏙옙 ?占쏙옙?占쏙옙?占쏙옙 userID)
+//                //insert to JDBC占�? ?占쏙옙?占쏙옙?占쏙옙 ?占쏙옙寃⑥꽌 由ъ뒪?占쏙옙?占쏙옙 異뷂옙?
+//                //?占쏙옙濡쒖엵 由ъ뒪?占쏙옙 JDBCconnect占�? ?占쏙옙湲곌린 (由ъ뒪?占쏙옙 戮묎린)
 //            } else if(option == 2){
-//                //?��로우 리스?�� JDBCconnect ?��기기 (리스?�� 뽑기)
-//                //(?��로우?��nickname ?��?��?�� userID)
+//                //?占쏙옙濡쒖슦 由ъ뒪?占쏙옙 JDBCconnect ?占쏙옙湲곌린 (由ъ뒪?占쏙옙 戮묎린)
+//                //(?占쏙옙濡쒖슦?占쏙옙nickname ?占쏙옙?占쏙옙?占쏙옙 userID)
 //            } else if(option == 3){
 //
 //            } else if(option == 4){
@@ -366,7 +343,7 @@ public class TwitterMain {
     ////////////////////////////////// Login Finish //////////////////////////////////
 
     ////////////////////////////////// Post Start  //////////////////////////////////
-    // Post ?��로드
+    // Post ?占쏙옙濡쒕뱶
     public static void uploadPost(int userIdx) {
         Scanner scanner = new Scanner(System.in);
         int postIdx = 0, posUserIdx = 0;
@@ -379,7 +356,7 @@ public class TwitterMain {
         try{
             JdbcConnection jdbcConnectionConnect = new JdbcConnection();
             posUserIdx = userIdx;
-            // userIdx 1 �? 고정
+            // userIdx 1 占�? 怨좎젙
             System.out.println("Enter a content : 1");
             content = scanner.nextLine();
 
@@ -397,7 +374,7 @@ public class TwitterMain {
             else if (Answer == 2) {
                 postIdx = jdbcConnectionConnect.uploadPost(posUserIdx, content);
             }
-            // Hash ?��?�� 받기
+            // Hash ?占쏙옙?占쏙옙 諛쏄린
             System.out.println("Enter a HashTag : ");
             Hash = scanner.nextLine();
             jdbcConnectionConnect.HashTag(postIdx, Hash);
@@ -411,7 +388,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // Post ?��?��
+    // Post ?占쏙옙?占쏙옙
     public static void deletePost(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the post number to be deleted.");
@@ -426,7 +403,7 @@ public class TwitterMain {
         }
 
     }
-    // post 좋아?��
+    // post 醫뗭븘?占쏙옙
     public static void postLike(int userIdx){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter Like postNum :");
@@ -440,7 +417,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // post 좋아?�� 개수
+    // post 醫뗭븘?占쏙옙 媛쒖닔
     public static void postLikeCount(){
         int postLIkeCount = 0;
         Scanner scanner = new Scanner(System.in);
@@ -456,7 +433,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // post 좋아?�� ?���? ?��?�� 목록
+    // post 醫뗭븘?占쏙옙 ?占쏙옙占�? ?占쏙옙?占쏙옙 紐⑸줉
     public static void postLikeList(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter post LIke Userid show :");
@@ -470,7 +447,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // ?��?��?�� ?��?��?��?�� ?���? 추�?
+    // ?占쏙옙?占쏙옙?占쏙옙 ?占쏙옙?占쏙옙?占쏙옙?占쏙옙 ?占쏙옙占�? 異뷂옙?
     public static void addComment(int userIdx){
         Scanner scanner = new Scanner(System.in);
 
@@ -489,7 +466,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // ?�� ?��?��?��?�� ?���? 목록
+    // ?占쏙옙 ?占쏙옙?占쏙옙?占쏙옙?占쏙옙 ?占쏙옙占�? 紐⑸줉
     public static void MyPostCommentList(int userIdx){
         Scanner scanner = new Scanner(System.in);
         int myPostIdx = 0;
@@ -506,7 +483,7 @@ public class TwitterMain {
         }
     }
 
-    // ?�� ?��?��?��?�� ?���? ?��?��
+    // ?占쏙옙 ?占쏙옙?占쏙옙?占쏙옙?占쏙옙 ?占쏙옙占�? ?占쏙옙?占쏙옙
     public static void deleteComment(int userIdx){
         Scanner scanner = new Scanner(System.in);
 
@@ -524,7 +501,7 @@ public class TwitterMain {
 
     }
 
-    // ?���? ?��?��?�� 리스?��
+    // ?占쏙옙占�? ?占쏙옙?占쏙옙?占쏙옙 由ъ뒪?占쏙옙
     public static void postList() {
         try{
             JdbcConnection jdbcConnectionConnect = new JdbcConnection();
@@ -598,7 +575,7 @@ public class TwitterMain {
     ////////////////////////////////// Special Function Start  //////////////////////////////////
     public static void search()
     {
-        String userID=null, postContent=null; //?�� 받아?�� ?��?�� ?��?���? 추�??���?
+        String userID=null, postContent=null; //?占쏙옙 諛쏆븘?占쏙옙 ?占쏙옙?占쏙옙 ?占쏙옙?占쏙옙占�? 異뷂옙??占쏙옙占�?
 
         int[] searchResult=new int[100];
         searchResult=JdbcConnection.searchPostidx();
@@ -606,8 +583,8 @@ public class TwitterMain {
         {
             if(idx!=0)
             {
-                System.out.println("RESULTID:" + JdbcConnection.returnUserID(idx));//postidx?�� ???�� userid 받아?���? (twitterSearch.returnUserID ?��?��)
-                System.out.println("RESULTCONTENT:"+JdbcConnection.returnPostContent(idx-1)); //postidx?�� ???�� content 받아?���? //idx-1 ?���? ?��류�? ?��?��?��?�� ?��?���? 모르겠음
+                System.out.println("RESULTID:" + JdbcConnection.returnUserID(idx));//postidx?占쏙옙 ???占쏙옙 userid 諛쏆븘?占쏙옙占�? (twitterSearch.returnUserID ?占쏙옙?占쏙옙)
+                System.out.println("RESULTCONTENT:"+JdbcConnection.returnPostContent(idx-1)); //postidx?占쏙옙 ???占쏙옙 content 諛쏆븘?占쏙옙占�? //idx-1 ?占쏙옙占�? ?占쏙옙瑜섓옙? ?占쏙옙?占쏙옙?占쏙옙?占쏙옙 ?占쏙옙?占쏙옙占�? 紐⑤Ⅴ寃좎쓬
             }
         }
     }

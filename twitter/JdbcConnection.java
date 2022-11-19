@@ -271,6 +271,7 @@ public class JdbcConnection {
         return count > 0 ? true : false;
     }
 
+    // before login (forget password)
     public boolean changeUserPassword(String userID, String newUserPassword) {
         String sql = "UPDATE userInfo SET userPassword = '" + newUserPassword + "' WHERE userId = '" + userID + "'";
 
@@ -279,34 +280,6 @@ public class JdbcConnection {
 
         int count = 0;
 
-        try {
-            ptsm = connect.prepareStatement(sql);
-            count = ptsm.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            // DB close
-            try {
-                if (connect != null) {
-                    connect.close();
-                }
-                if (ptsm != null) {
-                    ptsm.close();
-                }
-            } catch (SQLException e) {
-                System.out.println(ERROR);
-            }
-        }
-        return count > 0 ? true : false;
-    }
-
-    public boolean changeUserPassword(int userIdx, String newUserPassword) {
-        String sql = "UPDATE userinfo SET userPassword = '" + newUserPassword + "' WHERE userInfoIdx = " + userIdx;
-
-        Connection connect = getConnection();
-        PreparedStatement ptsm = null;
-
-        int count = 0;
         try {
             ptsm = connect.prepareStatement(sql);
             count = ptsm.executeUpdate();
@@ -740,7 +713,7 @@ public class JdbcConnection {
         }
     }
 
-    // ?›?•˜?Š” ?¬?Š¤?Š¸?˜ ?Œ“ê¸? ì¶”ê?
+    // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ì¶”ï¿½?
     public void addComment(int postIdx, String content, int userIdx) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -771,7 +744,7 @@ public class JdbcConnection {
         }
     }
 
-    // ?‚´ ?¬?Š¤?Š¸ ?Œ“ê¸? ë¶ˆëŸ¬?˜¤ê¸?
+    // ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ë¶ˆëŸ¬?ï¿½ï¿½ï¿½?
     public void myPostCommentList(int myPostIdx) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -812,7 +785,7 @@ public class JdbcConnection {
         }
     }
 
-    // ?‚´ ?¬?Š¤?Š¸ ?Œ“ê¸? ?‚­? œ
+    // ?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½
     public void deleteComment(int commentIdx) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -1067,7 +1040,7 @@ public class JdbcConnection {
         PreparedStatement preparedStatement = null;
         Connection connection = getConnection();
         try {
-            // ì¿¼ë¦¬ ?‹¤?–‰
+            // ì¿¼ë¦¬ ?ï¿½ï¿½?ï¿½ï¿½
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.executeUpdate();
 
@@ -1169,7 +1142,7 @@ public class JdbcConnection {
     // NOTIFICATION
     static int[] insertNoticeIdx(int userIdx, java.sql.Timestamp d) {
         Connection conn = null;
-        int returnValue[] = new int[10]; // ?•Œë¦? 10ê°œê¹Œì§?ë§?
+        int returnValue[] = new int[10]; // ?ï¿½ï¿½ï¿½? 10ê°œê¹Œï¿½?ï¿½?
 
         try {
 
@@ -1184,14 +1157,14 @@ public class JdbcConnection {
                 stmt = conn.createStatement();
                 String s1 = "insert into twitter.Notifications(userIdx,notificationDate,notification) "
                         + "values ((select userIdx,createAt from Follow where followedUser=" + userIdx + "and createAt>"
-                        + d + "),'FOLLOW');"; // ?…? ¥?œ ?‹œê°„ì„ ê¸°ì? ?´?›„ë¡? ?ƒê¸? ?Œ”ë¡œìš° ?•Œ?Œ
+                        + d + "),'FOLLOW');"; // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ê°„ì„ ê¸°ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ë¡œìš° ?ï¿½ï¿½?ï¿½ï¿½
                 stmt.executeQuery(s1);
-                String s2 = "select last_insert_id();"; // ?•Œë¦? ?‹œ?‘ì§?? 
+                String s2 = "select last_insert_id();"; // ?ï¿½ï¿½ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½
                 s1 = "insert into twitter.Notifications(userIdx,notificationDate,notification) "
                         + "values (select Post.userIdx, Comment.createAt from Comment"
                         + "natural join Post where Post.userIdx=(select Comment.postIdx"
-                        + "from Comment where Comment.createAt >" + d + ")),'COMMENT');"; // ?…? ¥?œ ?‹œê°„ì„ ê¸°ì? ?´?›„ë¡? ?ƒê¸? comment
-                // ?•Œ?Œ
+                        + "from Comment where Comment.createAt >" + d + ")),'COMMENT');"; // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½ê°„ì„ ê¸°ï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½? ?ï¿½ï¿½ï¿½? comment
+                // ?ï¿½ï¿½?ï¿½ï¿½
                 stmt.executeQuery(s1);
 
                 rs = stmt.executeQuery(s2);
@@ -1205,10 +1178,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return returnValue;
         } finally {
             try {
@@ -1222,9 +1195,9 @@ public class JdbcConnection {
         }
     }
 
-    static String returnNotification(int noticeIdx) { // noticeidx?— ë§ëŠ” notice ?‚´?š©
+    static String returnNotification(int noticeIdx) { // noticeidx?ï¿½ï¿½ ë§ëŠ” notice ?ï¿½ï¿½?ï¿½ï¿½
         Connection conn = null;
-        String returnValue = ""; // ?´?›„ ë¬¸ì œ?ˆ?œ¼ë©? nullë¡? ?ˆ˜? •ê°??Š¥
+        String returnValue = ""; // ?ï¿½ï¿½?ï¿½ï¿½ ë¬¸ì œ?ï¿½ï¿½?ï¿½ï¿½ï¿½? nullï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1235,10 +1208,10 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s3 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // postIdx?—
+                String s3 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // postIdx?ï¿½ï¿½
                 // ë§ëŠ”
                 // postContent
-                // ë½‘ì•„?‚´?Š” ì¿¼ë¦¬ë¬?
+                // ë½‘ì•„?ï¿½ï¿½?ï¿½ï¿½ ì¿¼ë¦¬ï¿½?
                 rs = stmt.executeQuery(s3);
                 if (rs.next()) {
                     returnValue = rs.getString(1);
@@ -1247,10 +1220,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return returnValue;
         } finally {
             try {
@@ -1264,9 +1237,9 @@ public class JdbcConnection {
     }
 
     static java.sql.Timestamp returnNoticeDate(int noticeIdx) {
-        // noticeidx?— ë§ëŠ” notice ?‹œê°?
+        // noticeidx?ï¿½ï¿½ ë§ëŠ” notice ?ï¿½ï¿½ï¿½?
         Connection conn = null;
-        java.sql.Timestamp returnValue = null; // timestamp?Š” ?‚¬?š©??‹œ? ?œ¼ë¡? ì¢‹ì? ëª»í•œ ?‹œê°„ê°’?„ ì¶œë ¥?•´ì¤? //ê·¸ë˜?„œ ?´?›„ ë¬¸ì œ?—†?œ¼ë©? Date?˜•?‹?œ¼ë¡? ë°”ê¿”ì£¼ëŠ” ê±?
+        java.sql.Timestamp returnValue = null; // timestamp?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ì¢‹ï¿½? ëª»í•œ ?ï¿½ï¿½ê°„ê°’?ï¿½ï¿½ ì¶œë ¥?ï¿½ï¿½ï¿½? //ê·¸ë˜?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ë¬¸ì œ?ï¿½ï¿½?ï¿½ï¿½ï¿½? Date?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë°”ê¿”ì£¼ëŠ” ï¿½?
         // ì¶”ì²œ!!!!!!!!
 
         try {
@@ -1278,7 +1251,7 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s4 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // noticeidx?—
+                String s4 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // noticeidx?ï¿½ï¿½
                 // ë§ëŠ”
                 // noticetime
                 rs = stmt.executeQuery(s4);
@@ -1289,10 +1262,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return returnValue;
         } finally {
             try {
@@ -1322,8 +1295,8 @@ public class JdbcConnection {
 
             while (true) {
                 stmt = conn.createStatement();
-                String s1 = "select hash from (select hash,count(hash) from HashTag order by count(hash) desc) A"; // ?ƒ?œ„
-                // 10ê°?
+                String s1 = "select hash from (select hash,count(hash) from HashTag order by count(hash) desc) A"; // ?ï¿½ï¿½?ï¿½ï¿½
+                // 10ï¿½?
                 // hash
                 // ì°¾ê¸°
                 rs = stmt.executeQuery(s1);
@@ -1345,10 +1318,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return trendResult;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return trendResult;
         } finally {
             try {
@@ -1362,9 +1335,9 @@ public class JdbcConnection {
         }
     }
 
-    static int returnHashNumber(String hash) { // ?Š¹? • Hash?— ???•´?„œ hashê°??ˆ˜ë¥? return?•˜?Š” class
+    static int returnHashNumber(String hash) { // ?ï¿½ï¿½?ï¿½ï¿½ Hash?ï¿½ï¿½ ???ï¿½ï¿½?ï¿½ï¿½ hashï¿½??ï¿½ï¿½ï¿½? return?ï¿½ï¿½?ï¿½ï¿½ class
         Connection conn = null;
-        int returnValue = 0; // ?´?›„ ë¬¸ì œ?ˆ?œ¼ë©? nullë¡? ?ˆ˜? •ê°??Š¥
+        int returnValue = 0; // ?ï¿½ï¿½?ï¿½ï¿½ ë¬¸ì œ?ï¿½ï¿½?ï¿½ï¿½ï¿½? nullï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1375,7 +1348,7 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s2 = "select count(hash) from HashTag where hash='" + hash + "'"; // hash?— ë§ëŠ” Hash ê°??ˆ˜ ë½‘ì•„?‚´?Š” ì¿¼ë¦¬ë¬?
+                String s2 = "select count(hash) from HashTag where hash='" + hash + "'"; // hash?ï¿½ï¿½ ë§ëŠ” Hash ï¿½??ï¿½ï¿½ ë½‘ì•„?ï¿½ï¿½?ï¿½ï¿½ ì¿¼ë¦¬ï¿½?
                 rs = stmt.executeQuery(s2);
                 if (rs.next()) {
                     returnValue = rs.getInt(1);
@@ -1384,10 +1357,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return returnValue;
         } finally {
             try {
@@ -1405,7 +1378,7 @@ public class JdbcConnection {
     static int[] searchPostidx() {
         Connection conn = null;
 
-        int[] searchResult = new int[100]; // ì´ˆê¸°ê°? 0
+        int[] searchResult = new int[100]; // ì´ˆê¸°ï¿½? 0
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1425,8 +1398,8 @@ public class JdbcConnection {
                 in.close();
 
                 stmt = conn.createStatement();
-                String s1 = "select distinct postIdx from POST where content LIKE '%" + searchContents + "%'"; // ê²??ƒ‰ ì¿¼ë¦¬ë¬?
-                // ì¿¼ë¦¬ë¬? ?ˆ˜? •?˜ˆ? •
+                String s1 = "select distinct postIdx from POST where content LIKE '%" + searchContents + "%'"; // ï¿½??ï¿½ï¿½ ì¿¼ë¦¬ï¿½?
+                // ì¿¼ë¦¬ï¿½? ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½
                 rs = stmt.executeQuery(s1);
                 int i = 0;
 
@@ -1448,10 +1421,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return searchResult;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return searchResult;
         } finally {
             try {
@@ -1465,9 +1438,9 @@ public class JdbcConnection {
         }
     }
 
-    static String returnUserID(int postIdx) { // postidx?— ???•´?„œ postUserIdë¥? return?•˜?Š” class
+    static String returnUserID(int postIdx) { // postidx?ï¿½ï¿½ ???ï¿½ï¿½?ï¿½ï¿½ postUserIdï¿½? return?ï¿½ï¿½?ï¿½ï¿½ class
         Connection conn = null;
-        String returnValue = ""; // ?´?›„ ë¬¸ì œ?ˆ?œ¼ë©? nullë¡? ?ˆ˜? •ê°??Š¥
+        String returnValue = ""; // ?ï¿½ï¿½?ï¿½ï¿½ ë¬¸ì œ?ï¿½ï¿½?ï¿½ï¿½ï¿½? nullï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1478,8 +1451,8 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s2 = "select postUserIdx from POST where postIdx = '" + postIdx + "'"; // postIdx?— ë§ëŠ” userid ë½‘ì•„?‚´?Š”
-                // ì¿¼ë¦¬ë¬?
+                String s2 = "select postUserIdx from POST where postIdx = '" + postIdx + "'"; // postIdx?ï¿½ï¿½ ë§ëŠ” userid ë½‘ì•„?ï¿½ï¿½?ï¿½ï¿½
+                // ì¿¼ë¦¬ï¿½?
                 rs = stmt.executeQuery(s2);
                 if (rs.next()) {
                     returnValue = rs.getString(1);
@@ -1488,10 +1461,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return returnValue;
         } finally {
             try {
@@ -1504,9 +1477,9 @@ public class JdbcConnection {
         }
     }
 
-    static String returnPostContent(int postIdx) { // postidx?— ???•´?„œ post ?‚´?š©ë¬? return?•˜?Š” class
+    static String returnPostContent(int postIdx) { // postidx?ï¿½ï¿½ ???ï¿½ï¿½?ï¿½ï¿½ post ?ï¿½ï¿½?ï¿½ï¿½ï¿½? return?ï¿½ï¿½?ï¿½ï¿½ class
         Connection conn = null;
-        String returnValue = ""; // ?´?›„ ë¬¸ì œ?ˆ?œ¼ë©? nullë¡? ?ˆ˜? •ê°??Š¥
+        String returnValue = ""; // ?ï¿½ï¿½?ï¿½ï¿½ ë¬¸ì œ?ï¿½ï¿½?ï¿½ï¿½ï¿½? nullï¿½? ?ï¿½ï¿½?ï¿½ï¿½ï¿½??ï¿½ï¿½
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1517,8 +1490,8 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s3 = "select content from Post where postUserIdx='" + postIdx + "'"; // postIdx?— ë§ëŠ” postContent
-                // ë½‘ì•„?‚´?Š” ì¿¼ë¦¬ë¬?
+                String s3 = "select content from Post where postUserIdx='" + postIdx + "'"; // postIdx?ï¿½ï¿½ ë§ëŠ” postContent
+                // ë½‘ì•„?ï¿½ï¿½?ï¿½ï¿½ ì¿¼ë¦¬ï¿½?
                 rs = stmt.executeQuery(s3);
                 if (rs.next()) {
                     returnValue = rs.getString(1);
@@ -1527,10 +1500,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("?“œ?¼?´ë²? ë¡œë”© ?‹¤?Œ¨");
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ï¿½? ë¡œë”© ?ï¿½ï¿½?ï¿½ï¿½");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("?—?Ÿ¬: " + e);
+            System.out.println("?ï¿½ï¿½?ï¿½ï¿½: " + e);
             return returnValue;
         } finally {
             try {
