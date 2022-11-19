@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.awt.Color;
 import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -64,7 +65,9 @@ public class EditProfile extends JFrame implements ActionListener {
 		frame.setBounds(0, 0, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
+		frame.setTitle("EditProfile");
+		ImageIcon frameImg = new ImageIcon("src/image/Twitter.png");
+		frame.setIconImage(frameImg.getImage());
 		saveButton = new JButton("Save");
 		saveButton.setForeground(new Color(255, 255, 255));
 		saveButton.setBackground(SystemColor.desktop);
