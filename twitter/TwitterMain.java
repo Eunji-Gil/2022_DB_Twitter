@@ -154,7 +154,7 @@ public class TwitterMain {
         selection = scanner.nextInt();
         scanner.nextLine();
 
-        // 이메일로 회원가입
+        // ?��메일�? ?��?���??��
         if (selection == 1) {
             try {
                 JdbcConnection JdbcConnection = new JdbcConnection();
@@ -194,7 +194,7 @@ public class TwitterMain {
                 e.printStackTrace();
                 System.out.println(WrongInput);
             }
-        } // 휴대폰 번호로 회원가입
+        } // ?��???�� 번호�? ?��?���??��
         else {
             try {
                 JdbcConnection JdbcConnection = new JdbcConnection();
@@ -340,13 +340,13 @@ public class TwitterMain {
 //            option = scanner.nextInt();
 //
 //            if(option == 1){
-//                //여기서 팔로우할 닉네임 입력값 받기
-//                //(로그인 한 사람의 userID)
-//                //insert to JDBC로 닉네임 넘겨서 리스트에 추가
-//                //팔로잉 리스트 JDBCconnect로 넘기기 (리스트 뽑기)
+//                //?��기서 ?��로우?�� ?��?��?�� ?��?���? 받기
+//                //(로그?�� ?�� ?��?��?�� userID)
+//                //insert to JDBC�? ?��?��?�� ?��겨서 리스?��?�� 추�?
+//                //?��로잉 리스?�� JDBCconnect�? ?��기기 (리스?�� 뽑기)
 //            } else if(option == 2){
-//                //팔로우 리스트 JDBCconnect 넘기기 (리스트 뽑기)
-//                //(팔로우한nickname 사람의 userID)
+//                //?��로우 리스?�� JDBCconnect ?��기기 (리스?�� 뽑기)
+//                //(?��로우?��nickname ?��?��?�� userID)
 //            } else if(option == 3){
 //
 //            } else if(option == 4){
@@ -366,7 +366,7 @@ public class TwitterMain {
     ////////////////////////////////// Login Finish //////////////////////////////////
 
     ////////////////////////////////// Post Start  //////////////////////////////////
-    // Post 업로드
+    // Post ?��로드
     public static void uploadPost(int userIdx) {
         Scanner scanner = new Scanner(System.in);
         int postIdx = 0, posUserIdx = 0;
@@ -379,7 +379,7 @@ public class TwitterMain {
         try{
             JdbcConnection jdbcConnectionConnect = new JdbcConnection();
             posUserIdx = userIdx;
-            // userIdx 1 로 고정
+            // userIdx 1 �? 고정
             System.out.println("Enter a content : 1");
             content = scanner.nextLine();
 
@@ -397,7 +397,7 @@ public class TwitterMain {
             else if (Answer == 2) {
                 postIdx = jdbcConnectionConnect.uploadPost(posUserIdx, content);
             }
-            // Hash 입력 받기
+            // Hash ?��?�� 받기
             System.out.println("Enter a HashTag : ");
             Hash = scanner.nextLine();
             jdbcConnectionConnect.HashTag(postIdx, Hash);
@@ -411,7 +411,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // Post 삭제
+    // Post ?��?��
     public static void deletePost(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the post number to be deleted.");
@@ -426,7 +426,7 @@ public class TwitterMain {
         }
 
     }
-    // post 좋아요
+    // post 좋아?��
     public static void postLike(int userIdx){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter Like postNum :");
@@ -440,7 +440,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // post 좋아요 개수
+    // post 좋아?�� 개수
     public static void postLikeCount(){
         int postLIkeCount = 0;
         Scanner scanner = new Scanner(System.in);
@@ -456,7 +456,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // post 좋아요 누른 사람 목록
+    // post 좋아?�� ?���? ?��?�� 목록
     public static void postLikeList(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter post LIke Userid show :");
@@ -470,7 +470,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // 원하는 포스트의 댓글 추가
+    // ?��?��?�� ?��?��?��?�� ?���? 추�?
     public static void addComment(int userIdx){
         Scanner scanner = new Scanner(System.in);
 
@@ -489,7 +489,7 @@ public class TwitterMain {
             System.out.println(TRY_AGAIN);
         }
     }
-    // 내 포스트의 댓글 목록
+    // ?�� ?��?��?��?�� ?���? 목록
     public static void MyPostCommentList(int userIdx){
         Scanner scanner = new Scanner(System.in);
         int myPostIdx = 0;
@@ -506,7 +506,7 @@ public class TwitterMain {
         }
     }
 
-    // 내 포스트의 댓글 삭제
+    // ?�� ?��?��?��?�� ?���? ?��?��
     public static void deleteComment(int userIdx){
         Scanner scanner = new Scanner(System.in);
 
@@ -524,7 +524,7 @@ public class TwitterMain {
 
     }
 
-    // 전체 포스트 리스트
+    // ?���? ?��?��?�� 리스?��
     public static void postList() {
         try{
             JdbcConnection jdbcConnectionConnect = new JdbcConnection();
@@ -598,7 +598,7 @@ public class TwitterMain {
     ////////////////////////////////// Special Function Start  //////////////////////////////////
     public static void search()
     {
-        String userID=null, postContent=null; //더 받아올 내용 있으면 추가하기
+        String userID=null, postContent=null; //?�� 받아?�� ?��?�� ?��?���? 추�??���?
 
         int[] searchResult=new int[100];
         searchResult=JdbcConnection.searchPostidx();
@@ -606,8 +606,8 @@ public class TwitterMain {
         {
             if(idx!=0)
             {
-                System.out.println("RESULTID:" + JdbcConnection.returnUserID(idx));//postidx에 대한 userid 받아오기 (twitterSearch.returnUserID 사용)
-                System.out.println("RESULTCONTENT:"+JdbcConnection.returnPostContent(idx-1)); //postidx에 대한 content 받아오기 //idx-1 이면 오류가 안나는데 이유를 모르겠음
+                System.out.println("RESULTID:" + JdbcConnection.returnUserID(idx));//postidx?�� ???�� userid 받아?���? (twitterSearch.returnUserID ?��?��)
+                System.out.println("RESULTCONTENT:"+JdbcConnection.returnPostContent(idx-1)); //postidx?�� ???�� content 받아?���? //idx-1 ?���? ?��류�? ?��?��?��?�� ?��?���? 모르겠음
             }
         }
     }

@@ -14,19 +14,32 @@ public class ChangePwNotLoginModal extends JDialog {
 		setLayout(null);
 		setLocationRelativeTo(null);
 		setResizable(false);
+		getContentPane().setBackground(Color.white);
 	
 	// Success Panel
-		JPanel panelSuccessChange = new JPanel();
-		panelSuccessChange.setBounds(0, 0, 495, 395);
-		getContentPane().add(panelSuccessChange);
-		panelSuccessChange.setLayout(null);
+//		JPanel panelSuccessChange = new JPanel();
+//		panelSuccessChange.setBounds(0, 0, 495, 395);
+//		getContentPane().add(panelSuccessChange);
+//		panelSuccessChange.setLayout(null);
+//		
+//		// Label
+//		JLabel labelSuccess = new JLabel("Change password successfully!");
+//		labelSuccess.setFont(new Font("Arial", Font.BOLD, 18));
+//		labelSuccess.setBounds(100,150,400,50);
+//		
+//		panelSuccessChange.add(labelSuccess);
 		
-		// Label
-		JLabel labelSuccess = new JLabel("Change password successfully!");
-		labelSuccess.setFont(new Font("Arial", Font.BOLD, 18));
-		labelSuccess.setBounds(100,150,400,50);
+//		Logo
+        JLabel imgLabel = new JLabel();
+		ImageIcon logo = new ImageIcon(LoginModal.class.getResource("./twitter_logo.png"));
 		
-		panelSuccessChange.add(labelSuccess);
+		Image img = logo.getImage();
+		Image updateImg = img.getScaledInstance(60, 45, Image.SCALE_SMOOTH);
+		ImageIcon updateLogo = new ImageIcon(updateImg);
+		
+		imgLabel.setIcon(updateLogo);
+		imgLabel.setBounds(212, 26, 60, 45);
+        imgLabel.setHorizontalAlignment(JLabel.CENTER);
 		
 	// Change Password Panel
 		JPanel panelChangePw = new JPanel();
@@ -37,30 +50,35 @@ public class ChangePwNotLoginModal extends JDialog {
 		// ID
 		JLabel labelId = new JLabel("ID  ");
 		labelId.setFont(new Font("Arial", Font.BOLD, 18));
-		labelId.setBounds(86,90,150,50);
+		labelId.setForeground(new Color(128,128,128));
+		labelId.setBounds(86,100,150,50);
 		JTextField textFieldId = new JTextField(45);
-		textFieldId.setBounds(236, 100, 170, 32);
+		textFieldId.setBounds(236, 110, 180, 32);
 		
 		// Email
 		JLabel labelEmail = new JLabel("Email  ");
 		labelEmail.setFont(new Font("Arial", Font.BOLD, 18));
-		labelEmail.setBounds(86,140,100,50);
+		labelEmail.setForeground(new Color(128,128,128));
+		labelEmail.setBounds(86,150,100,50);
 		JTextField textFieldEmail = new JTextField(45);
-		textFieldEmail.setBounds(236, 150, 170, 32);
+		textFieldEmail.setBounds(236, 160, 180, 32);
 		
 		// New Password
 		JLabel newPassword = new JLabel("New Password  ");
 		newPassword.setFont(new Font("Arial", Font.BOLD, 18));
-		newPassword.setBounds(86,190,150,50);
+		newPassword.setForeground(new Color(128,128,128));
+		newPassword.setBounds(86,200,150,50);
 		JPasswordField textFieldnewPw = new JPasswordField(45);
-		textFieldnewPw.setBounds(236, 200, 170, 32);
+		textFieldnewPw.setBounds(236, 210, 180, 32);
 		
 		// Change Password button
 		JButton btnChangePw = new JButton("Change Password");
 		btnChangePw.setFont(new Font("Arial", Font.BOLD, 18));
-		btnChangePw.setBounds(140,270,200,40);
+		btnChangePw.setBackground(new Color(0,172,238));
+		btnChangePw.setForeground(Color.white);
+		btnChangePw.setBounds(140,275,200,40);
 		
-		panelSuccessChange.setVisible(false);
+//		panelSuccessChange.setVisible(false);
 		
 		// Press a Change Password Button
 		btnChangePw.addActionListener(new ActionListener() {
@@ -73,9 +91,7 @@ public class ChangePwNotLoginModal extends JDialog {
 				try {
 					JdbcConnection JdbcConnection = new JdbcConnection();
 					
-					// userId ����� �Է��� ���
 					if (JdbcConnection.existUserID(userId)) {
-						// email �߸� �Է��� ���
 						if (!JdbcConnection.userConfirm(userId,userEmail)) {
 							JOptionPane.showMessageDialog(null, "Wrong Email. Try again.", "Warning", JOptionPane.ERROR_MESSAGE);
 						}
@@ -84,7 +100,6 @@ public class ChangePwNotLoginModal extends JDialog {
 							JOptionPane.showMessageDialog(null, "Password's changed!");
 						}
 					}
-					// userId �߸� �Է��� ���
 					else if (!JdbcConnection.existUserID(userId)) {
 						JOptionPane.showMessageDialog(null, "Wrong Id. Try again.", "Warning", JOptionPane.ERROR_MESSAGE);
 					}
@@ -98,6 +113,7 @@ public class ChangePwNotLoginModal extends JDialog {
 			}			
 		});
 		
+		panelChangePw.add(imgLabel);
 		panelChangePw.add(labelId);
 		panelChangePw.add(textFieldId);
 		panelChangePw.add(labelEmail);
@@ -105,6 +121,7 @@ public class ChangePwNotLoginModal extends JDialog {
 		panelChangePw.add(newPassword);
 		panelChangePw.add(textFieldnewPw);
 		panelChangePw.add(btnChangePw);
+		panelChangePw.setBackground(Color.white);
 	}
 	
 }

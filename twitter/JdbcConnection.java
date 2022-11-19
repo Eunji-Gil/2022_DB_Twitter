@@ -165,22 +165,38 @@ public class JdbcConnection {
         return false;
     }
 
-    // 휴대폰 번호 회원가입
+    // Sign up for phone number
     public boolean singUpPhoneNumber(String userID, String phoneNumber, String userPassword, String userName) {
         String sql = " INSERT INTO userinfo(userId, phoneNumber, userPassword, userName) " + " VALUES(?, ?, ?, ?) ";
-
+        String userIDX = " SELECT userInfoIdx from userinfo " + " WHERE userId = '" + userID + "'";
+        String sqlUser = " INSERT INTO user(userIdx, userName, userID) " + " VALUES(?, ?, ?) ";
+        
+        ResultSet rs = null;
         Connection connect = getConnection();
         PreparedStatement ptsm = null;
 
         int count = 0;
 
         try {
-            ptsm = connect.prepareStatement(sql);
+            ptsm = connect.prepareStatement(sql);           
             ptsm.setString(1, userID);
             ptsm.setString(2, phoneNumber);
             ptsm.setString(3, userPassword);
             ptsm.setString(4, userName);
 
+            count = ptsm.executeUpdate();
+            
+            ptsm = connect.prepareStatement(userIDX);
+            rs = ptsm.executeQuery();
+            if(rs.next()) {
+            	userIDX = rs.getString(1);
+            }     
+            
+            ptsm = connect.prepareStatement(sqlUser);    
+            ptsm.setString(1, userIDX);
+            ptsm.setString(2, userName);
+            ptsm.setString(3, userID);  
+            
             count = ptsm.executeUpdate();
 
         } catch (SQLException e) {
@@ -202,10 +218,13 @@ public class JdbcConnection {
         return count > 0 ? true : false;
     }
 
-    // 이메일 회원가입
+    // Sign up for Email
     public boolean signUp(String userID, String email, String userPassword, String userName) {
         String sql = " INSERT INTO userinfo(userId, userEmail, userPassword, userName) " + " VALUES(?, ?, ?, ?) ";
-
+        String userIDX = " SELECT userInfoIdx from userinfo " + " WHERE userId = '" + userID + "'";
+        String sqlUser = " INSERT INTO user(userIdx, userName, userID) " + " VALUES(?, ?, ?) ";
+        
+        ResultSet rs = null;
         Connection connect = getConnection();
         PreparedStatement ptsm = null;
 
@@ -218,6 +237,19 @@ public class JdbcConnection {
             ptsm.setString(3, userPassword);
             ptsm.setString(4, userName);
 
+            count = ptsm.executeUpdate();
+            
+            ptsm = connect.prepareStatement(userIDX);
+            rs = ptsm.executeQuery();
+            if(rs.next()) {
+            	userIDX = rs.getString(1);
+            }
+            
+            ptsm = connect.prepareStatement(sqlUser);    
+            ptsm.setString(1, userIDX);
+            ptsm.setString(2, userName);
+            ptsm.setString(3, userID);  
+            
             count = ptsm.executeUpdate();
 
         } catch (SQLException e) {
@@ -708,7 +740,7 @@ public class JdbcConnection {
         }
     }
 
-    // 원하는 포스트의 댓글 추가
+    // ?��?��?�� ?��?��?��?�� ?���? 추�?
     public void addComment(int postIdx, String content, int userIdx) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -739,7 +771,7 @@ public class JdbcConnection {
         }
     }
 
-    // 내 포스트 댓글 불러오기
+    // ?�� ?��?��?�� ?���? 불러?���?
     public void myPostCommentList(int myPostIdx) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -780,7 +812,7 @@ public class JdbcConnection {
         }
     }
 
-    // 내 포스트 댓글 삭제
+    // ?�� ?��?��?�� ?���? ?��?��
     public void deleteComment(int commentIdx) {
         Connection connection = getConnection();
         PreparedStatement preparedStatement = null;
@@ -856,20 +888,22 @@ public class JdbcConnection {
         try {
             preparedStatement = connection.prepareStatement(sql);
             selectResult = preparedStatement.executeQuery();
+            System.out.println(selectResult.next());
             if (selectResult.next()) {
                 for (int i = 1; i <= 7; i++) {
                     res[i] = selectResult.getString(i);
                 }
+                
                 preparedStatement = connection.prepareStatement(profilephotoSql);
                 selectResult = preparedStatement.executeQuery();
-                if (selectResult.next()) {
+                if (selectResult.next()) 
                     res[8] = selectResult.getString(1);
                     preparedStatement = connection.prepareStatement(headphotoSql);
                     selectResult = preparedStatement.executeQuery();
                     selectResult.next();
                     res[9] = selectResult.getString(1);
                     return res;
-                }
+                
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1033,7 +1067,7 @@ public class JdbcConnection {
         PreparedStatement preparedStatement = null;
         Connection connection = getConnection();
         try {
-            // 쿼리 실행
+            // 쿼리 ?��?��
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.executeUpdate();
 
@@ -1135,7 +1169,7 @@ public class JdbcConnection {
     // NOTIFICATION
     static int[] insertNoticeIdx(int userIdx, java.sql.Timestamp d) {
         Connection conn = null;
-        int returnValue[] = new int[10]; // 알림 10개까지만
+        int returnValue[] = new int[10]; // ?���? 10개까�?�?
 
         try {
 
@@ -1150,14 +1184,14 @@ public class JdbcConnection {
                 stmt = conn.createStatement();
                 String s1 = "insert into twitter.Notifications(userIdx,notificationDate,notification) "
                         + "values ((select userIdx,createAt from Follow where followedUser=" + userIdx + "and createAt>"
-                        + d + "),'FOLLOW');"; // 입력된 시간을 기준 이후로 생긴 팔로우 알람
+                        + d + "),'FOLLOW');"; // ?��?��?�� ?��간을 기�? ?��?���? ?���? ?��로우 ?��?��
                 stmt.executeQuery(s1);
-                String s2 = "select last_insert_id();"; // 알림 시작지점
+                String s2 = "select last_insert_id();"; // ?���? ?��?���??��
                 s1 = "insert into twitter.Notifications(userIdx,notificationDate,notification) "
                         + "values (select Post.userIdx, Comment.createAt from Comment"
                         + "natural join Post where Post.userIdx=(select Comment.postIdx"
-                        + "from Comment where Comment.createAt >" + d + ")),'COMMENT');"; // 입력된 시간을 기준 이후로 생긴 comment
-                // 알람
+                        + "from Comment where Comment.createAt >" + d + ")),'COMMENT');"; // ?��?��?�� ?��간을 기�? ?��?���? ?���? comment
+                // ?��?��
                 stmt.executeQuery(s1);
 
                 rs = stmt.executeQuery(s2);
@@ -1171,10 +1205,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return returnValue;
         } finally {
             try {
@@ -1188,9 +1222,9 @@ public class JdbcConnection {
         }
     }
 
-    static String returnNotification(int noticeIdx) { // noticeidx에 맞는 notice 내용
+    static String returnNotification(int noticeIdx) { // noticeidx?�� 맞는 notice ?��?��
         Connection conn = null;
-        String returnValue = ""; // 이후 문제있으면 null로 수정가능
+        String returnValue = ""; // ?��?�� 문제?��?���? null�? ?��?���??��
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1201,10 +1235,10 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s3 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // postIdx에
+                String s3 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // postIdx?��
                 // 맞는
                 // postContent
-                // 뽑아내는 쿼리문
+                // 뽑아?��?�� 쿼리�?
                 rs = stmt.executeQuery(s3);
                 if (rs.next()) {
                     returnValue = rs.getString(1);
@@ -1213,10 +1247,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return returnValue;
         } finally {
             try {
@@ -1230,9 +1264,9 @@ public class JdbcConnection {
     }
 
     static java.sql.Timestamp returnNoticeDate(int noticeIdx) {
-        // noticeidx에 맞는 notice 시간
+        // noticeidx?�� 맞는 notice ?���?
         Connection conn = null;
-        java.sql.Timestamp returnValue = null; // timestamp는 사용자시점으로 좋지 못한 시간값을 출력해줌 //그래서 이후 문제없으면 Date형식으로 바꿔주는 걸
+        java.sql.Timestamp returnValue = null; // timestamp?�� ?��?��?��?��?��?���? 좋�? 못한 ?��간값?�� 출력?���? //그래?�� ?��?�� 문제?��?���? Date?��?��?���? 바꿔주는 �?
         // 추천!!!!!!!!
 
         try {
@@ -1244,7 +1278,7 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s4 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // noticeidx에
+                String s4 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // noticeidx?��
                 // 맞는
                 // noticetime
                 rs = stmt.executeQuery(s4);
@@ -1255,10 +1289,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return returnValue;
         } finally {
             try {
@@ -1288,8 +1322,8 @@ public class JdbcConnection {
 
             while (true) {
                 stmt = conn.createStatement();
-                String s1 = "select hash from (select hash,count(hash) from HashTag order by count(hash) desc) A"; // 상위
-                // 10개
+                String s1 = "select hash from (select hash,count(hash) from HashTag order by count(hash) desc) A"; // ?��?��
+                // 10�?
                 // hash
                 // 찾기
                 rs = stmt.executeQuery(s1);
@@ -1311,10 +1345,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return trendResult;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return trendResult;
         } finally {
             try {
@@ -1328,9 +1362,9 @@ public class JdbcConnection {
         }
     }
 
-    static int returnHashNumber(String hash) { // 특정 Hash에 대해서 hash갯수를 return하는 class
+    static int returnHashNumber(String hash) { // ?��?�� Hash?�� ???��?�� hash�??���? return?��?�� class
         Connection conn = null;
-        int returnValue = 0; // 이후 문제있으면 null로 수정가능
+        int returnValue = 0; // ?��?�� 문제?��?���? null�? ?��?���??��
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1341,7 +1375,7 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s2 = "select count(hash) from HashTag where hash='" + hash + "'"; // hash에 맞는 Hash 갯수 뽑아내는 쿼리문
+                String s2 = "select count(hash) from HashTag where hash='" + hash + "'"; // hash?�� 맞는 Hash �??�� 뽑아?��?�� 쿼리�?
                 rs = stmt.executeQuery(s2);
                 if (rs.next()) {
                     returnValue = rs.getInt(1);
@@ -1350,10 +1384,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return returnValue;
         } finally {
             try {
@@ -1371,7 +1405,7 @@ public class JdbcConnection {
     static int[] searchPostidx() {
         Connection conn = null;
 
-        int[] searchResult = new int[100]; // 초기값 0
+        int[] searchResult = new int[100]; // 초기�? 0
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1391,8 +1425,8 @@ public class JdbcConnection {
                 in.close();
 
                 stmt = conn.createStatement();
-                String s1 = "select distinct postIdx from POST where content LIKE '%" + searchContents + "%'"; // 검색 쿼리문
-                // 쿼리문 수정예정
+                String s1 = "select distinct postIdx from POST where content LIKE '%" + searchContents + "%'"; // �??�� 쿼리�?
+                // 쿼리�? ?��?��?��?��
                 rs = stmt.executeQuery(s1);
                 int i = 0;
 
@@ -1414,10 +1448,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return searchResult;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return searchResult;
         } finally {
             try {
@@ -1431,9 +1465,9 @@ public class JdbcConnection {
         }
     }
 
-    static String returnUserID(int postIdx) { // postidx에 대해서 postUserId를 return하는 class
+    static String returnUserID(int postIdx) { // postidx?�� ???��?�� postUserId�? return?��?�� class
         Connection conn = null;
-        String returnValue = ""; // 이후 문제있으면 null로 수정가능
+        String returnValue = ""; // ?��?�� 문제?��?���? null�? ?��?���??��
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1444,8 +1478,8 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s2 = "select postUserIdx from POST where postIdx = '" + postIdx + "'"; // postIdx에 맞는 userid 뽑아내는
-                // 쿼리문
+                String s2 = "select postUserIdx from POST where postIdx = '" + postIdx + "'"; // postIdx?�� 맞는 userid 뽑아?��?��
+                // 쿼리�?
                 rs = stmt.executeQuery(s2);
                 if (rs.next()) {
                     returnValue = rs.getString(1);
@@ -1454,10 +1488,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return returnValue;
         } finally {
             try {
@@ -1470,9 +1504,9 @@ public class JdbcConnection {
         }
     }
 
-    static String returnPostContent(int postIdx) { // postidx에 대해서 post 내용물 return하는 class
+    static String returnPostContent(int postIdx) { // postidx?�� ???��?�� post ?��?���? return?��?�� class
         Connection conn = null;
-        String returnValue = ""; // 이후 문제있으면 null로 수정가능
+        String returnValue = ""; // ?��?�� 문제?��?���? null�? ?��?���??��
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -1483,8 +1517,8 @@ public class JdbcConnection {
             ResultSet rs = null;
             while (true) {
                 stmt = conn.createStatement();
-                String s3 = "select content from Post where postUserIdx='" + postIdx + "'"; // postIdx에 맞는 postContent
-                // 뽑아내는 쿼리문
+                String s3 = "select content from Post where postUserIdx='" + postIdx + "'"; // postIdx?�� 맞는 postContent
+                // 뽑아?��?�� 쿼리�?
                 rs = stmt.executeQuery(s3);
                 if (rs.next()) {
                     returnValue = rs.getString(1);
@@ -1493,10 +1527,10 @@ public class JdbcConnection {
             }
 
         } catch (ClassNotFoundException e) {
-            System.out.println("드라이버 로딩 실패");
+            System.out.println("?��?��?���? 로딩 ?��?��");
             return returnValue;
         } catch (SQLException e) {
-            System.out.println("에러: " + e);
+            System.out.println("?��?��: " + e);
             return returnValue;
         } finally {
             try {
