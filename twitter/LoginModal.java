@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import gui.MyProfile;
 
+// 로그인 모달 (로그인 실행)
 public class LoginModal extends JDialog {
 	
 	public LoginModal(Window parent) {

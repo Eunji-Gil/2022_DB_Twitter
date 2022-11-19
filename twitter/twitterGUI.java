@@ -6,8 +6,9 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+// Ʈ���� ù ����ȭ�� (���⼭���� �������ּ���)
 public class twitterGUI {
-	
+
 	public static final int WIDTH = 1000;
 	public static final int HEIGHT = 800;
 
@@ -139,20 +140,6 @@ public class twitterGUI {
 		btnExit.setForeground(Color.white);
 		btnExit.setBounds(718, 320, 190, 52);
 		panel.add(btnExit);
-		
-		// Change Password (after login - �α��� �� ����ȭ�鿡 �߰�)
-		JButton btnUpdatePwLogin = new JButton("Update Password");
-		btnUpdatePwLogin.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ChangePwLoginModal changePwloginModal = new ChangePwLoginModal(frame);
-				changePwloginModal.setVisible(true);
-			}
-		});
-		btnUpdatePwLogin.setFont(new Font("Arial", Font.BOLD, 18));
-		btnUpdatePwLogin.setBackground(new Color(0,172,238));
-		btnUpdatePwLogin.setForeground(Color.white);
-		btnUpdatePwLogin.setBounds(718, 390, 190, 52);
-		panel.add(btnUpdatePwLogin);
 	}
 
 }

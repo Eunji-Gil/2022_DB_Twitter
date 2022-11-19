@@ -272,6 +272,7 @@ public class JdbcConnection {
 		return count > 0 ? true : false;
 	}
 
+    // before login (forget password)
 	public boolean changeUserPassword(String userID, String newUserPassword) {
 		String sql = "UPDATE userInfo SET userPassword = '" + newUserPassword + "' WHERE userId = '" + userID + "'";
 
@@ -280,34 +281,6 @@ public class JdbcConnection {
 
 		int count = 0;
 
-		try {
-			ptsm = connect.prepareStatement(sql);
-			count = ptsm.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			// DB close
-			try {
-				if (connect != null) {
-					connect.close();
-				}
-				if (ptsm != null) {
-					ptsm.close();
-				}
-			} catch (SQLException e) {
-				System.out.println(ERROR);
-			}
-		}
-		return count > 0 ? true : false;
-	}
-
-	public boolean changeUserPassword(int userIdx, String newUserPassword) {
-		String sql = "UPDATE userinfo SET userPassword = '" + newUserPassword + "' WHERE userInfoIdx = " + userIdx;
-
-		Connection connect = getConnection();
-		PreparedStatement ptsm = null;
-
-		int count = 0;
 		try {
 			ptsm = connect.prepareStatement(sql);
 			count = ptsm.executeUpdate();

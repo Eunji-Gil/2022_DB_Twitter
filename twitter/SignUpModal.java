@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
+// 회원가입 모달창 - 여기서 회원가입 실행
 public class SignUpModal extends JDialog {
 	
 	public SignUpModal(Window parent) {
@@ -112,6 +113,7 @@ public class SignUpModal extends JDialog {
 						}
 						else {
 							JdbcConnection.signUp(userId, userEmail, userPassword, userName);
+							panelEmailSignUp.setVisible(false);
 							JOptionPane.showMessageDialog(null, "Welcome to Twitter!");
 						}
 					}
