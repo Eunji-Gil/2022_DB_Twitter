@@ -1,10 +1,9 @@
-package gui;
-
 import java.io.FileReader;
 import java.sql.*;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Properties;
-import java.util.Scanner;
+import java.text.SimpleDateFormat;
+
 
 public class JdbcConnection {
 	static final String ERROR = "Error Occurred";
@@ -189,7 +188,7 @@ public class JdbcConnection {
 
 			ptsm = connect.prepareStatement(userIDX);
 			rs = ptsm.executeQuery();
-			if (rs.next()) {
+			if(rs.next()) {
 				userIDX = rs.getString(1);
 			}
 
@@ -242,7 +241,7 @@ public class JdbcConnection {
 
 			ptsm = connect.prepareStatement(userIDX);
 			rs = ptsm.executeQuery();
-			if (rs.next()) {
+			if(rs.next()) {
 				userIDX = rs.getString(1);
 			}
 
@@ -272,7 +271,7 @@ public class JdbcConnection {
 		return count > 0 ? true : false;
 	}
 
-    // before login (forget password)
+	// before login (forget password)
 	public boolean changeUserPassword(String userID, String newUserPassword) {
 		String sql = "UPDATE userInfo SET userPassword = '" + newUserPassword + "' WHERE userId = '" + userID + "'";
 
@@ -346,34 +345,42 @@ public class JdbcConnection {
 		return userIdx;
 	}
 
+
 	///////////////////////////////////// Login Finish
 	///////////////////////////////////// ///////////////////////////////////////
 
 	///////////////////////////////////// ProFile Start
 	///////////////////////////////////// ///////////////////////////////////////
-	public void postList() {
+	public String[][] postList() {
 		Connection connection = getConnection();
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 
-		String sql = "select postIdx, posUserIdx, content, photAddress from Post left join \n"
-				+ "(select postIdx as postIdx2, photAddress from postPhoto natural join Photo) PhotoAd\n"
-				+ "on Post.postIdx = PhotoAd.postIdx2; ";
+		String sql = "select userName, userEmail, content, hash, photAddress from userInfo right join \n" +
+				"(select * from HashTag natural join (post natural join (PostPhoto natural join photo))) as postF\n" +
+				"on userInfo.userInfoIdx = postF.posUserIdx;";
 
 		try {
 			preparedStatement = connection.prepareStatement(sql);
 			resultSet = preparedStatement.executeQuery(sql);
+			ArrayList<String[]> list = new ArrayList<String[]>();
 			while (resultSet.next()) {
-				int postIdx = resultSet.getInt(1);
-				int posUseridx = resultSet.getInt(2);
-				String content = resultSet.getString(3);
-				if (resultSet.wasNull())
-					content = "null";
-				String photoAddress = resultSet.getString(4);
-				if (resultSet.wasNull())
-					photoAddress = "null";
-				System.out.println(postIdx + " \t" + posUseridx + "\t" + content + "\t" + photoAddress);
+				list.add(new String[]{
+						resultSet.getString("userName"),
+						resultSet.getString("userEmail"),
+						resultSet.getString("content"),
+						resultSet.getString("photAddress"),
+						resultSet.getString("hash"),
+
+
+				});
+				System.out.println(resultSet.getString("userName"));
+				System.out.println(resultSet.getString("userEmail"));
+				System.out.println(resultSet.getString("content"));
+
 			}
+			String[][] arr = new String[list.size()][5];
+			return list.toArray(arr);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println(ERROR);
@@ -392,8 +399,57 @@ public class JdbcConnection {
 			} catch (SQLException e) {
 				System.out.println(ERROR);
 			}
+
 		}
+		return null;
 	}
+	public int[][] postListLC(){
+		Connection connection = getConnection();
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		String sql = "select count(postLikeIdx), count(commentIdx) from postLike natural join Comment \n" +
+				"group by postIdx;";
+
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			resultSet = preparedStatement.executeQuery(sql);
+			ArrayList<int[]> list = new ArrayList<int[]>();
+			while (resultSet.next()) {
+				list.add(new int[]{
+						resultSet.getInt(1),
+						resultSet.getInt(2)
+
+				});
+
+
+			}
+			int[][] arr = new int[list.size()][2];
+			return list.toArray(arr);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println(ERROR);
+		} finally {
+			// DB close
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+				if (preparedStatement != null) {
+					preparedStatement.close();
+				}
+				if (resultSet != null) {
+					resultSet.close();
+				}
+			} catch (SQLException e) {
+				System.out.println(ERROR);
+			}
+
+		}
+		return null;
+
+	}
+
 
 	public void myPostList(int userIdx) {
 		Connection connection = getConnection();
@@ -885,7 +941,7 @@ public class JdbcConnection {
 	}
 
 	public static void editProfile(int ID, String photoAdrress, String headerPhotoAdrress, String userBio,
-			String userLocatoin, String userName) {
+								   String userLocatoin, String userName) {
 		String sqlPhoto = "insert into photo(photoAdress) value('" + photoAdrress + "')";
 		String AdrressIdx1 = "SELECT LAST_INSERT_ID()";
 		String sqlheadPhoto = "insert into photo(photoAdress) value ('" + headerPhotoAdrress + "')";
@@ -907,7 +963,7 @@ public class JdbcConnection {
 				preparedStatement = connection.prepareStatement(AdrressIdx2);
 				selectResult = preparedStatement.executeQuery();
 				if(selectResult.next()) {
-				ads2 = selectResult.getString(1);
+					ads2 = selectResult.getString(1);
 				}
 				String sql = "update user \r\n" + "set userBio = \"" + userBio + "\",photoIdx = \"" + ads1
 						+ "\",headerPhotoIdx = \"" + ads2 + "\",userLocatoin = \"" + userLocatoin + "\",userName = \""
@@ -1133,55 +1189,87 @@ public class JdbcConnection {
 		}
 		return str;
 	}
-
 	///////////////////////////////////// ProFile Finish
 	///////////////////////////////////// ///////////////////////////////////////
 	///////////////////////////////////// Special Function Start
 	///////////////////////////////////// ///////////////////////////////////////
 	// NOTIFICATION
-	static int[] insertNoticeIdx(int userIdx, java.sql.Timestamp d) {
+	public static String[][][] notificationResult(int userIdx){
 		Connection conn = null;
-		int returnValue[] = new int[10]; // ?���? 10개까�?�?
+		String[][][] returnValue=new String[2][2][10];
+		int i;
+		String timestamp=new String();
+		SimpleDateFormat sdf = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
+
 
 		try {
-
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
+			String url = "jdbc:mysql://"+server+"/"+database;
+			conn = DriverManager.getConnection(url, userName, password);
 
 			Statement stmt = null;
 			ResultSet rs = null;
+			PreparedStatement pstm=null;
 
-			while (true) {
-				stmt = conn.createStatement();
-				String s1 = "insert into twitter.Notifications(userIdx,notificationDate,notification) "
-						+ "values ((select userIdx,createAt from Follow where followedUser=" + userIdx + "and createAt>"
-						+ d + "),'FOLLOW');"; // ?��?��?�� ?��간을 기�? ?��?���? ?���? ?��로우 ?��?��
-				stmt.executeQuery(s1);
-				String s2 = "select last_insert_id();"; // ?���? ?��?���??��
-				s1 = "insert into twitter.Notifications(userIdx,notificationDate,notification) "
-						+ "values (select Post.userIdx, Comment.createAt from Comment"
-						+ "natural join Post where Post.userIdx=(select Comment.postIdx"
-						+ "from Comment where Comment.createAt >" + d + ")),'COMMENT');"; // ?��?��?�� ?��간을 기�?
-																							// ?��?���? ?���? comment
-				// ?��?��
-				stmt.executeQuery(s1);
 
-				rs = stmt.executeQuery(s2);
-				int i = 0;
 
-				if (rs.next()) {
-					returnValue[i] = rs.getInt(1);
-					i++;
-				}
+
+			stmt = conn.createStatement();
+			String s1 = "select notificationDate from Notifications where useridx="+userIdx+" limit 1";
+			rs = stmt.executeQuery(s1);
+
+			rs.next();
+			if (rs.getTimestamp(1)==null)
+			{
+				s1 = "insert into Notifications(userIdx,notification) values ("+userIdx+",\"flag\")";
+				pstm = conn.prepareStatement(s1);
+				pstm.executeUpdate();
 				return returnValue;
 			}
+			timestamp=sdf.format(rs.getTimestamp(1));
+
+			pstm = null;
+			s1="select User.userName,Follow.createAt from Follow natural join User where Follow.createAt> '"+ timestamp + "' and Follow.followedUser='"+userIdx+"' order by Follow.createAt desc";
+			rs=stmt.executeQuery(s1);
+
+			i=0;
+			while (rs.next()) {
+				returnValue[0][0][i]=rs.getString(1);
+				returnValue[0][1][i]=sdf.format(rs.getTimestamp(2)); /*바로 return해줘도 될듯*/
+				i++;
+				if(i>10) break;
+			}
+
+			rs=null;
+			s1 = "select User.userName, Comment.createAt from User natural join (Post natural join Comment) "
+					+ "where post.postUserIdx ="+userIdx+" and Comment.postIdx=Post.postIdx and Comment.createAt > '"+timestamp+"' order by Comment.createAt desc";
+			rs=stmt.executeQuery(s1);
+
+			i=0;
+			while (rs.next())
+			{
+				returnValue[1][0][i]=rs.getString(1);
+				returnValue[1][1][i]=sdf.format(rs.getTimestamp(2)); /*바로 return해줘도 될듯*/
+				i++;
+				if(i>10) break;
+			}
+
+			s1="delete from Notifications where userIdx="+userIdx;
+			pstm = conn.prepareStatement(s1);
+			pstm.executeUpdate();
+
+			pstm=null;
+			s1="insert into Notifications(userIdx,notification) values ("+userIdx+",\"flag\")";
+			pstm = conn.prepareStatement(s1);
+			pstm.executeUpdate();
+
+			return returnValue;
 
 		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
+			System.out.println("드라이버 로딩 실패");
 			return returnValue;
-		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
+		}  catch (SQLException e) {
+			System.out.println("에러: " + e);
 			return returnValue;
 		} finally {
 			try {
@@ -1191,138 +1279,54 @@ public class JdbcConnection {
 			} catch (SQLException e) {
 				e.printStackTrace();
 				return returnValue;
-			}
-		}
-	}
-
-	static String returnNotification(int noticeIdx) { // noticeidx?�� 맞는 notice ?��?��
-		Connection conn = null;
-		String returnValue = ""; // ?��?�� 문제?��?���? null�? ?��?���??��
-
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
-
-			Statement stmt = null;
-			ResultSet rs = null;
-			while (true) {
-				stmt = conn.createStatement();
-				String s3 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // postIdx?��
-				// 맞는
-				// postContent
-				// 뽑아?��?�� 쿼리�?
-				rs = stmt.executeQuery(s3);
-				if (rs.next()) {
-					returnValue = rs.getString(1);
-				}
-				return returnValue;
-			}
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
-			return returnValue;
-		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
-			return returnValue;
-		} finally {
-			try {
-				if (conn != null && !conn.isClosed()) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	static java.sql.Timestamp returnNoticeDate(int noticeIdx) {
-		// noticeidx?�� 맞는 notice ?���?
-		Connection conn = null;
-		java.sql.Timestamp returnValue = null; // timestamp?�� ?��?��?��?��?��?���? 좋�? 못한 ?��간값?�� 출력?���? //그래?��
-												// ?��?�� 문제?��?���? Date?��?��?���? 바꿔주는 �?
-		// 추천!!!!!!!!
-
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
-
-			Statement stmt = null;
-			ResultSet rs = null;
-			while (true) {
-				stmt = conn.createStatement();
-				String s4 = "select content from Notifications where notificationIdx='" + noticeIdx + "'"; // noticeidx?��
-				// 맞는
-				// noticetime
-				rs = stmt.executeQuery(s4);
-				if (rs.next()) {
-					returnValue = rs.getTimestamp(1);
-				}
-				return returnValue;
-			}
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
-			return returnValue;
-		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
-			return returnValue;
-		} finally {
-			try {
-				if (conn != null && !conn.isClosed()) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
 			}
 		}
 	}
 	// NOTIFICATION END
 
 	// TREND
-	static String[] trendHash() {
+	public static String[] trendHash() {
 		Connection conn = null;
 		String[] trendResult = new String[10];
 
 		try {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
+			String url = "jdbc:mysql://"+server+"/"+database;
+			conn = DriverManager.getConnection(url, userName, password);
+
 
 			Statement stmt = null;
 			ResultSet rs = null;
 
-			while (true) {
-				stmt = conn.createStatement();
-				String s1 = "select hash from (select hash,count(hash) from HashTag order by count(hash) desc) A"; // ?��?��
-				// 10�?
-				// hash
-				// 찾기
-				rs = stmt.executeQuery(s1);
 
-				int i = 1;
+			stmt = conn.createStatement();
+			String s1 = "select hash from (select hash,count(hash) from HashTag order by count(hash) desc) A"; // 상위
+			// 10개
+			// hash
+			// 찾기
+			rs = stmt.executeQuery(s1);
 
-				if (rs.next()) {
-					do {
-						trendResult[i] = rs.getString(1);
-						i++;
+			int i = 0;
 
-						if (i > 101)
-							return trendResult;
-					} while (rs.next());
-				} else {
-					System.out.println("NO TREND RESULT");
-				}
-				return trendResult;
+			if (rs.next()) {
+				do {
+					trendResult[i] = rs.getString(1);
+					i++;
+
+					if (i > 9)
+						return trendResult;
+				} while (rs.next());
+			} else {
+				System.out.println("NO TREND RESULT");
 			}
+			return trendResult;
 
 		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
+			System.out.println("드라이버 로딩 실패");
 			return trendResult;
-		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
+		}  catch (SQLException e) {
+			System.out.println("에러: " + e);
 			return trendResult;
 		} finally {
 			try {
@@ -1336,21 +1340,20 @@ public class JdbcConnection {
 		}
 	}
 
-	static int returnHashNumber(String hash) { // ?��?�� Hash?�� ???��?�� hash�??���? return?��?�� class
+	public static int returnHashNumber(String hash) { // 특정 Hash에 대해서 hash갯수를 return하는 class
 		Connection conn = null;
-		int returnValue = 0; // ?��?�� 문제?��?���? null�? ?��?���??��
+		int returnValue = 0; // 이후 문제있으면 null로 수정가능
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
+			String url = "jdbc:mysql://"+server+"/"+database;
+			conn = DriverManager.getConnection(url, userName, password);
 
 			Statement stmt = null;
 			ResultSet rs = null;
 			while (true) {
 				stmt = conn.createStatement();
-				String s2 = "select count(hash) from HashTag where hash='" + hash + "'"; // hash?�� 맞는 Hash �??��
-																							// 뽑아?��?�� 쿼리�?
+				String s2 = "select count(hash) from HashTag where hash='" + hash + "'"; // hash에 맞는 Hash 갯수 뽑아내는 쿼리문
 				rs = stmt.executeQuery(s2);
 				if (rs.next()) {
 					returnValue = rs.getInt(1);
@@ -1359,10 +1362,10 @@ public class JdbcConnection {
 			}
 
 		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
+			System.out.println("드라이버 로딩 실패");
 			return returnValue;
 		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
+			System.out.println("에러: " + e);
 			return returnValue;
 		} finally {
 			try {
@@ -1377,32 +1380,24 @@ public class JdbcConnection {
 	// TREND END
 
 	// SEARCH
-	static int[] searchPostidx() {
+	static int[] searchPostidx(String input) {
 		Connection conn = null;
 
-		int[] searchResult = new int[100]; // 초기�? 0
+		int[] searchResult = new int[10]; // 초기값 0
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
+			String url = "jdbc:mysql://"+server+"/"+database;
+			conn = DriverManager.getConnection(url, userName, password);
 
 			Statement stmt = null;
 			ResultSet rs = null;
 
 			while (true) {
-				Scanner in = new Scanner(System.in);
-
-				String searchContents = null;
-
-				System.out.println("Enter search keywords");
-				searchContents = in.nextLine();
-				in.close();
 
 				stmt = conn.createStatement();
-				String s1 = "select distinct postIdx from POST where content LIKE '%" + searchContents + "%'"; // �??��
-																												// 쿼리�?
-				// 쿼리�? ?��?��?��?��
+				String s1 = "select distinct post.postIdx from POST left outer join HashTag on Post.postidx = Hashtag.postIdx where post.content LIKE '%" + input + "%' or Hashtag.hash LIKE '%" + input + "%' order by postIdx desc"; // 검색 쿼리문
+				// 쿼리문 수정예정
 				rs = stmt.executeQuery(s1);
 				int i = 0;
 
@@ -1424,10 +1419,10 @@ public class JdbcConnection {
 			}
 
 		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
+			System.out.println("드라이버 로딩 실패");
 			return searchResult;
 		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
+			System.out.println("에러: " + e);
 			return searchResult;
 		} finally {
 			try {
@@ -1441,73 +1436,56 @@ public class JdbcConnection {
 		}
 	}
 
-	static String returnUserID(int postIdx) { // postidx?�� ???��?�� postUserId�? return?��?�� class
+
+
+	public static String[][] returnPostContent(int postIdx) { // postidx에 대해서 post 내용물 return하는 class
 		Connection conn = null;
-		String returnValue = ""; // ?��?�� 문제?��?���? null�? ?��?���??��
+		String[][] returnValue = new String[5][8]; // 이후 문제있으면 null로 수정가능
 
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
+			String url = "jdbc:mysql://"+server+"/"+database;
+			conn = DriverManager.getConnection(url, userName, password);
 
 			Statement stmt = null;
 			ResultSet rs = null;
 			while (true) {
 				stmt = conn.createStatement();
-				String s2 = "select postUserIdx from POST where postIdx = '" + postIdx + "'"; // postIdx?�� 맞는 userid
-																								// 뽑아?��?��
-				// 쿼리�?
-				rs = stmt.executeQuery(s2);
-				if (rs.next()) {
-					returnValue = rs.getString(1);
-				}
-				return returnValue;
-			}
-
-		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
-			return returnValue;
-		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
-			return returnValue;
-		} finally {
-			try {
-				if (conn != null && !conn.isClosed()) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	static String returnPostContent(int postIdx) { // postidx?�� ???��?�� post ?��?���? return?��?�� class
-		Connection conn = null;
-		String returnValue = ""; // ?��?�� 문제?��?���? null�? ?��?���??��
-
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			String url = "jdbc:mysql://localhost/TWITTER";
-			conn = DriverManager.getConnection(url, "root", "2240");
-
-			Statement stmt = null;
-			ResultSet rs = null;
-			while (true) {
-				stmt = conn.createStatement();
-				String s3 = "select content from Post where postUserIdx='" + postIdx + "'"; // postIdx?�� 맞는 postContent
-				// 뽑아?��?�� 쿼리�?
+//                String s3 = "select post.content,photo.photoAdress, post.postIdx, hashTag.hash, count(PostLike.postLikeIdx), count(Comment.commentIdx),  User.userID, User.userName"
+//                		+ "from (((postphoto natural join photo) right outer join (HashTag right outer join (PostLike right outer join (Comment right outer join (User right outer join post on Post.postUserIdx = user.userIdx) on Comment.postIdx=post.postIdx) on PostLike.postUserIdx=post.postIdx) on HashTag.postIdx=post.postIdx) on postPhoto.postIdx = post.postIdx) )"
+//                		+ "where post.postIdx="+postIdx+" order by post.postIdx desc";
+				String s3 = "select post.content,photo.photoAdress, post.postIdx, hashTag.hash, count(PostLike.postLikeIdx), count(Comment.commentIdx), User.userID, User.userName\r\n"
+						+ "from (((postphoto natural join photo) right outer join (HashTag right outer join \r\n"
+						+ "(PostLike right outer join (Comment right outer join (User right outer join post on Post.postUserIdx=user.useridx) on Comment.postIdx=post.postIdx) on PostLike.postUserIdx=post.postIdx) \r\n"
+						+ "on HashTag.postIdx=post.postIdx) on postPhoto.postIdx = post.postIdx) ) \r\n"
+						+ "where post.postIdx='"+postIdx+ "' order by post.postIdx desc";
+				// 뽑아내는 쿼리문
 				rs = stmt.executeQuery(s3);
-				if (rs.next()) {
-					returnValue = rs.getString(1);
+				int i=0;
+
+//                if(!rs.next())
+//                {System.out.println("ERROR");}
+
+
+				while (rs.next()) {
+					returnValue[i][0] = rs.getString(1);//포스트내용
+					returnValue[i][1] = rs.getString(2);//포스트사진
+					returnValue[i][2] = rs.getString(3);//포스트idx
+					returnValue[i][3] = rs.getString(4);//해쉬태그
+					returnValue[i][4] = rs.getString(5);//포스트좋아요수
+					returnValue[i][5] = rs.getString(6);//커멘트수
+					returnValue[i][6] = rs.getString(7);//유저아이디
+					returnValue[i][7] = rs.getString(8);//유저네임
+					i++;
 				}
 				return returnValue;
 			}
 
 		} catch (ClassNotFoundException e) {
-			System.out.println("?��?��?���? 로딩 ?��?��");
+			System.out.println("드라이버 로딩 실패");
 			return returnValue;
 		} catch (SQLException e) {
-			System.out.println("?��?��: " + e);
+			System.out.println("에러: " + e);
 			return returnValue;
 		} finally {
 			try {

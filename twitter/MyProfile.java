@@ -1,4 +1,4 @@
-package gui;
+
 
 import java.awt.EventQueue;
 import java.awt.Image;
@@ -277,32 +277,32 @@ public class MyProfile extends JFrame implements ActionListener {
 
 	public String monthMapping(String month) {
 		switch (month) {
-		case "1":
-			return "January";
-		case "2":
-			return "February";
-		case "3":
-			return "March";
-		case "4":
-			return "April";
-		case "5":
-			return "May";
-		case "6":
-			return "June";
-		case "7":
-			return "July";
-		case "8":
-			return "August";
-		case "9":
-			return "September";
-		case "10":
-			return "October";
-		case "11":
-			return "November";
-		case "12":
-			return "December";
-		default:
-			return month;
+			case "1":
+				return "January";
+			case "2":
+				return "February";
+			case "3":
+				return "March";
+			case "4":
+				return "April";
+			case "5":
+				return "May";
+			case "6":
+				return "June";
+			case "7":
+				return "July";
+			case "8":
+				return "August";
+			case "9":
+				return "September";
+			case "10":
+				return "October";
+			case "11":
+				return "November";
+			case "12":
+				return "December";
+			default:
+				return month;
 		}
 
 	}
@@ -361,7 +361,7 @@ public class MyProfile extends JFrame implements ActionListener {
 		}
 		if (bb.equals(homeButton)) {
 			//홈버튼으로 버튼 누르면 홈으로 연결되는 버튼입니다.
-			}
+		}
 		if(bb.equals(viewPost1)) {
 			//
 			//postinfo[count][2]가 post Idx입니다

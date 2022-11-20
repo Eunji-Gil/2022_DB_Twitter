@@ -1,4 +1,3 @@
-package gui;
 
 import java.awt.EventQueue;
 
@@ -17,8 +16,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JToggleButton;
-import net.miginfocom.swing.MigLayout;
-import temp.JdbcConnection;
+
 
 import java.awt.event.ActionListener;
 import java.util.Arrays;

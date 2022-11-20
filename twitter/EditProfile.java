@@ -1,4 +1,4 @@
-package gui;
+
 
 import java.awt.EventQueue;
 
@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 
-import temp.JdbcConnection;
 import javax.swing.JScrollPane;
 
 public class EditProfile extends JFrame implements ActionListener {
@@ -33,7 +32,7 @@ public class EditProfile extends JFrame implements ActionListener {
 	JButton profileButton;
 	JButton saveButton;
 	static int userIdx;
-	/** 
+	/**
 	 * Launch the application.
 	 */
 	public void main(String[] args) {
@@ -51,7 +50,7 @@ public class EditProfile extends JFrame implements ActionListener {
 	public static String[] editProfileinfo;
 	/**
 	 * Create the application.
-	 * 
+	 *
 	 * @param userEditInfo
 	 */
 
@@ -131,7 +130,7 @@ public class EditProfile extends JFrame implements ActionListener {
 		Location.setColumns(10);
 		Location.setBounds(126, 550, 738, 70);
 		frame.getContentPane().add(Location);
-		
+
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(137, 91, 2, 2);
 		frame.getContentPane().add(scrollPane);
