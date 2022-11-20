@@ -1,6 +1,7 @@
 import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 import java.text.SimpleDateFormat;
 
@@ -905,15 +906,18 @@ public class JdbcConnection {
 	}
 
 	public static String[] profile(int ID) {
-		String sql = "select user.userName,user.userLocatoin,user.userBio,user.userId,user.createAt,count(CASE when follow.userIdx = user.userIdx THEN 1 END) as following,count( CASE when follow.followedUser = user.userIdx THEN 1 END) as follower\r\n"
-				+ "from follow,user\r\n" + "where user.userIdx = '" + ID + "';";
-		String profilephotoSql = "select photoAdress\r\n"
+		String sql = "select user.userName,user.userLocatoin,user.userBio,user.userId,user.creatAt,count(CASE when follow.userIdx = user.userIdx THEN 1 END) as following,count( CASE when follow.followedUser = user.userIdx THEN 1 END) as follower\n" +
+				"from follow right outer join user on follow.followedUser = user.userIdx\n" +
+				" where user.userIdx='" + ID + "';";
+
+		String profilephotoSql = "select photAddress\r\n"
 				+ "from photo join user u on photo.photoIdx = u.photoIdx where userIdx='" + ID + "';";
-		String headphotoSql = "select photoAdress\r\n"
+		String headphotoSql = "select photAddress\r\n"
 				+ "from photo join user u on photo.photoIdx = u.headerPhotoIdx where userIdx='" + ID + "';";
 		PreparedStatement preparedStatement = null;
 		Connection connection = getConnection();
 		ResultSet selectResult = null;
+		System.out.println(ID);
 		String[] res = new String[10];
 		try {
 			preparedStatement = connection.prepareStatement(sql);
@@ -923,6 +927,7 @@ public class JdbcConnection {
 					res[i] = selectResult.getString(i);
 				}
 			}
+			System.out.println(Arrays.toString(res));
 			preparedStatement = connection.prepareStatement(profilephotoSql);
 			selectResult = preparedStatement.executeQuery();
 			if (selectResult.next()) {
@@ -933,6 +938,7 @@ public class JdbcConnection {
 			if (selectResult.next()) {
 				res[9] = selectResult.getString(1);
 			}
+			System.out.println(Arrays.toString(res));
 			return res;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -940,11 +946,11 @@ public class JdbcConnection {
 		return res;
 	}
 
-	public static void editProfile(int ID, String photoAdrress, String headerPhotoAdrress, String userBio,
+	public static void editProfile(int ID, String photAddress, String headerPhotoAdrress, String userBio,
 								   String userLocatoin, String userName) {
-		String sqlPhoto = "insert into photo(photoAdress) value('" + photoAdrress + "')";
+		String sqlPhoto = "insert into photo(photAddress) value('" + photAddress + "')";
 		String AdrressIdx1 = "SELECT LAST_INSERT_ID()";
-		String sqlheadPhoto = "insert into photo(photoAdress) value ('" + headerPhotoAdrress + "')";
+		String sqlheadPhoto = "insert into photo(photAddress) value ('" + headerPhotoAdrress + "')";
 		String AdrressIdx2 = "SELECT LAST_INSERT_ID()";
 		String ads1 = null;
 		String ads2 = null;
@@ -1036,7 +1042,7 @@ public class JdbcConnection {
 	}
 
 	public static String[][] postView(int ID) {
-		String sql = "select post.content,photo.photoAdress, post.postIdx\r\n"
+		String sql = "select post.content,photo.photAddress, post.postIdx\r\n"
 				+ "from ((postphoto natural join photo)\r\n"
 				+ "    right outer join post on postPhoto.postIdx = post.postIdx)\r\n" + "where posUserIdx= '" + ID
 				+ "'";
